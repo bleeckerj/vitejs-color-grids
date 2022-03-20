@@ -1,6 +1,10 @@
 import './style.css'
 import $, { event } from "jquery";
 
+var borderColor = "black";
+var borderWidth = 1;
+var outlineOffset = 1
+
 function doSomething(e) {
   e = e || window.event;
   var target = e.target || e.srcElement;
@@ -21,7 +25,7 @@ function randomHsl() {
 function divideMeVert(source) {
   var height = parseInt($(source).css("height"), 10);
   // var width = parseInt($(source).css("width"), 10);
-  var new_height = height/2;
+  var new_height = height/2 + borderWidth;
   // var new_width = width;
   console.log(new_height.toString()+"px");
   var x = new_height.toString()+"px";
@@ -33,15 +37,17 @@ function divideMeVert(source) {
 function addToMeVert(source) {
   console.log($(source).css("height"));
   var height = parseInt($(source).css("height"), 10);
-  var h = (height/2).toString()+"px";
+  var h = (Math.ceil(height/2)).toString()+"px";
   var width = parseInt($(source).css("width"), 10);
   var w = (width).toString()+"px";
   var position = $(source).position();
   console.log("left="+position.left+" top="+position.top);
-  var top_of_new = parseInt(position.top + height/2)+"px";
+  var top_of_new = parseInt(borderWidth+position.top + height/2)+"px";
   console.log(top_of_new);
   i++;
-  var template = "<div id='name_"+i+ "' style=' position: absolute; left: "+position.left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+";  outline: 4px solid white; outline-offset: -2px;background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
+  var template = "<div id='name_"+i+ "' style=' position: absolute; left: "+position.left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
+
+
 
   // var template = "<div id='name_"+i+ "' style='float: left;  position: relative; height: "+h+"; width: "+w+";  outline: 2px solid white; outline-offset: -2px;background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
   $(source).after(template);
@@ -63,11 +69,10 @@ function divideMeLeft(source) {
   var height = parseInt($(source).css("height"), 10);
   var width = parseInt($(source).css("width"), 10);
   var new_height = height;
-  var new_width = width / 2;
-  console.log(new_height.toString()+"px");
+  var new_width = Math.ceil((width) / 2) + borderWidth;
   var x = new_height.toString()+"px";
   var y = new_width.toString()+"px";
-  $(source).animate({width: y}, 500);
+  $(source).animate({width: y}, 1500);
   // $(source).css("float", "left");
 
   //$(dest).width(y);
@@ -78,18 +83,18 @@ function divideMeLeft(source) {
 function addToMeLeft(source) {
   console.log($(source).css("width"));
   var width = parseInt($(source).css("width"), 10);
-  var w = (width/2).toString()+"px";
+  var w = (Math.ceil(width/2)).toString()+"px";
   var height = parseInt($(source).css("height"), 10);
   var h = height.toString()+"px";
   var position = $(source).position();
   var top = parseInt(position.top);
   var left = parseInt(position.left);
-  console.log("top="+top+" left="+left+" right="+parseInt(left+width/2));
-  var new_left = left+width/2;
-  console.log("new_left="+new_left+" width/2="+width/2);
+  // console.log("top="+top+" left="+left+" right="+parseInt(left+width/2));
+  var new_left = borderWidth+left+width/2;
+  // console.log("new_left="+new_left+" width/2="+width/2);
   i++;
   // new template we're adding
-  var template = "<div id='name_"+i+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline: 4px solid white; outline-offset: -2px;background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
+  var template = "<div id='name_"+i+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
 
@@ -104,7 +109,7 @@ function addToMeLeft(source) {
     
       }
   });
-  $(source).css("width",w);  
+  //$(source).css("width",w);  
 }
 
 var i = 1;
@@ -113,7 +118,7 @@ document.querySelector('#app').innerHTML = `
 
 `
 $('#app').append("<div style='width: 100vh; height: 100vh;' id=top></div>")
-$('#top').append("<div id=first style='height: 90vh; width: 90vh;  background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
+$('#top').append("<div id=first style='height: 90vh; width: 90vh;  outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
 $('#first')
 .on("click", function(e) {
   if (e.altKey) {
