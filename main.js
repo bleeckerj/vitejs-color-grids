@@ -2,13 +2,14 @@ import './style.css'
 import $, { event } from "jquery";
 import { ethers } from "ethers";
 
-var borderColor = "black";
+var borderColor = "white";
 var borderWidth = 1;
 var outlineOffset = 1;
 var clickCount = 0;
 var blockIndex = 0;
 var blockBuild = new Array();
 
+/*
 const provider = new ethers.providers.Web3Provider(
   window.ethereum,
   "any"
@@ -22,6 +23,7 @@ const signer = provider.getSigner();
     "Your wallet is " + userAddress;
     
 })();
+*/
 
 function getLowestFraction(x0) {
   var eps = 1.0E-15;
@@ -163,7 +165,7 @@ function addToMeVert(source) {
   //console.log(top_of_new);
   blockIndex++;
   var bgColor = randomHsl()
-  var template = "<div id='block_"+blockIndex+ "' style=' margin: "+borderWidth+"px; position: absolute; left: "+position.left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style=' margin: -"+borderWidth+"px; position: absolute; left: "+position.left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
 
 
 
