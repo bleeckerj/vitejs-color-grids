@@ -245,13 +245,14 @@ function addToMeLeft(source) {
   recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
 
 }
-
+//Opt/Alt-Click folds Vertically Shit-Click folds Horizontally
 
 document.querySelector('#app').innerHTML = `
-<div id=connect style='width:90vw; height 10vh;'><button class=button button5; style='font-size: 100%;'>CONNECT WALLET</button></div>
+<div id=connect style='width:100vw; height 10vh;'><button class=button button5; style='margin-bottom: 40px;font-size: 100%;'>CONNECT WALLET</button></div>
 `
 
-$('#app').append("<div style='width:90vw; height: 10vh;' id=wallet></div><div style='width: 90vw; height: 100vh;' id=top></div>")
+$('#connect').append("<div style='' id=foo>Opt/Alt-Click folds Vertically Shit-Click folds Horizontally</div>");
+$('#foo').append("<div id=top style='width: 90vw; height: 100vh;'></div>");
 $('#top').append("<div id=block_0 style='height: 600px; width: 600px; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
 $('#block_0')
 .on("click", function(e) {
@@ -265,7 +266,7 @@ $('#block_0')
     addToMeVert(this);
   }
 })
-
+$('#top').append("Hello");
 recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
 // console.log($('#block_0').width());
