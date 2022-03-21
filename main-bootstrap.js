@@ -211,7 +211,6 @@ function addToMeVert(source) {
   mc.get('singletap').requireFailure('doubletap');
 
   mc.on("singletap doubletap", function(ev) {
-    document.getElementById("instructions").innerText = ''
     console.log(ev.type);
     if(ev.type == 'singletap') {
       divideMeLeft(myElement);
@@ -294,7 +293,6 @@ function addToMeLeft(source) {
   mc.get('singletap').requireFailure('doubletap');
 
   mc.on("singletap doubletap", function(ev) {
-    document.getElementById("instructions").innerText = ''
     console.log(ev.type);
     if(ev.type == 'singletap') {
       divideMeLeft(myElement);
@@ -358,7 +356,6 @@ mc.get('singletap').requireFailure('doubletap');
 // single to the left
 // double vert
 mc.on("singletap doubletap", function(ev) {
-  document.getElementById("instructions").innerText = ''
    console.log(ev.type);
    if(ev.type == 'singletap') {
      divideMeLeft(myElement);
@@ -389,16 +386,13 @@ recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 //console.log(h);
 
 //$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 100%;'><button class=button button5; style='font-size: 100%;'>GET INSTRUCTIONS</button></div>");
-// $('#howto').after('<div>TAP/CLICK FOLDS VERTICALLY</div><div>DOUBLE TAP/CLICK FOLDS HORIZONTALLY.</div><div>THERE IS NO UNDO.</div><div>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
-$('#howto').append('<div style="font-size: 14px" class="p-2">TAP/CLICK FOLDS VERTICALLY <br/>DOUBLE TAP/CLICK FOLDS HORIZONTALLY. <br/>THERE IS NO UNDO. WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
-// $('#howto').append('<div class="p-2 text-sm-left">HELLO</div>')
-
+$('#instructions').after('<div>TAP/CLICK FOLDS VERTICALLY</div><div>DOUBLE TAP/CLICK FOLDS HORIZONTALLY.</div><div>THERE IS NO UNDO.</div><div>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
-$('#instructionbutton').after("<div class=p-3><button id=button class=button button1;>DONE</button></div>");
-$('#button').on("click", function(e) {
- unfurlBlockBuild();
-});
-//$('#instructions').after("<div style='position: absolute; left: "+new_left+"px; top: "+(top+100)+"px; text-align: left; font-size: 9px'></div>")
+$('#instruction-button').after("<div class=p-3><button class=button button3;>DONE</button></div>");
+//$('#button').on("click", function(e) {
+//  unfurlBlockBuild();
+//});
+//$('#button').after("<div id=instructions style='position: absolute; left: "+new_left+"px; top: "+(top+100)+"px; text-align: left; font-size: 9pt'></div>")
 
 // document.addEventListener('long-press', function(e) {
 //   console.log(e.target);
