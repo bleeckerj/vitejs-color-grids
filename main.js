@@ -248,10 +248,10 @@ function addToMeLeft(source) {
 
 
 document.querySelector('#app').innerHTML = `
-
+<div id=connect style='width:90vw; height 10vh;'><button class=button button5; style='font-size: 100%;'>CONNECT WALLET</button></div>
 `
 
-$('#app').append("<div style='width:100vw; height: 10vh;' id=wallet></div><div style='width: 100vw; height: 100vh;' id=top></div>")
+$('#app').append("<div style='width:90vw; height: 10vh;' id=wallet></div><div style='width: 90vw; height: 100vh;' id=top></div>")
 $('#top').append("<div id=block_0 style='height: 600px; width: 600px; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
 $('#block_0')
 .on("click", function(e) {
@@ -279,7 +279,7 @@ var x = $('#block_0').height();
 var h = top+x+20
 //console.log(h);
 
-$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 150%;'><button class=button button5>GET INSTRUCTIONS</button></div>");
+$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 100%;'><button class=button button5; style='font-size: 100%;'>GET INSTRUCTIONS</button></div>");
 $('#button').on("click", function(e) {
   unfurlBlockBuild();
 });
