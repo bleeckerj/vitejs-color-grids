@@ -3,8 +3,8 @@ import $, { event } from "jquery";
 import { ethers } from "ethers";
 
 var borderColor = "white";
-var borderWidth = 1;
-var outlineOffset = 1;
+var borderWidth = 2;
+var outlineOffset = 2;
 var clickCount = 0;
 var blockIndex = 0;
 var blockBuild = new Array();
@@ -139,9 +139,9 @@ function randomHsl() {
 }
 
 function divideMeVert(source) {
-  var height = parseInt($(source).css("height"), 10);
+  var height = parseFloat($(source).css("height"));
   // var width = parseInt($(source).css("width"), 10);
-  var new_height = height/2;
+  var new_height = Math.round(height/2);
   // var new_width = width;
   //console.log(new_height.toString()+"px");
   var x = new_height.toString()+"px";
@@ -156,16 +156,19 @@ function addToMeVert(source) {
   //console.log(x);
   var height = Math.round(x);
   //console.log(height);
-  var h = (height/2).toString()+"px";
-  var width = parseInt($(source).css("width"), 10);
+  var h = Math.round(height/2).toString()+"px";
+  var width = parseFloat($(source).css("width"));
   var w = (width).toString()+"px";
   var position = $(source).position();
+  console.log("position.left="+position.left);
+  var left = Math.round(position.left);
+  console.log("left="+left);
   //console.log("left="+position.left+" top="+position.top);
-  var top_of_new = parseInt(borderWidth+position.top + height/2)+"px";
+  var top_of_new = parseInt(position.top + height/2)+"px";
   //console.log(top_of_new);
   blockIndex++;
   var bgColor = randomHsl()
-  var template = "<div id='block_"+blockIndex+ "' style=' margin: -"+borderWidth+"px; position: absolute; left: "+position.left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
 
 
 
@@ -198,10 +201,10 @@ function divideMeLeft(source) {
   var height = Math.round(parseFloat($(source).css("height")));
   var width = Math.round(parseFloat($(source).css("width")));
   var new_height = height;
-  var new_width = (width) / 2;// + borderWidth;
+  var new_width = Math.round((width) / 2);// + borderWidth;
   var x = new_height.toString()+"px";
   var y = new_width.toString()+"px";
-  $(source).animate({width: y}, 200);
+  $(source).animate({width: y}, 500);
   // $(source).css("float", "left");
 
   //$(dest).width(y);
@@ -210,7 +213,6 @@ function divideMeLeft(source) {
 
 
 function addToMeLeft(source) {
-  console.log($(source).css("width"));
   var width = parseFloat($(source).css("width"));
   var w = (Math.round(width/2)).toString()+"px";
   var height = parseFloat($(source).css("height"));
@@ -218,12 +220,12 @@ function addToMeLeft(source) {
   var position = $(source).position();
   var top = parseInt(position.top);
   var left = parseInt(position.left);
-  // console.log("top="+top+" left="+left+" right="+parseInt(left+width/2));
-  var new_left = borderWidth+left+width/2;
+  console.log("top="+top+" left="+left+" right="+parseInt(left+width/2));
+  var new_left = left+Math.round(width/2);
   // console.log("new_left="+new_left+" width/2="+width/2);
   blockIndex++;
   // new template we're adding
-  var template = "<div id='block_"+blockIndex+ "' style='  margin: "+borderWidth+"px;  position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
 
@@ -250,7 +252,7 @@ document.querySelector('#app').innerHTML = `
 `
 
 $('#app').append("<div style='width:100vw; height: 10vh;' id=wallet></div><div style='width: 100vw; height: 100vh;' id=top></div>")
-$('#top').append("<div id=block_0 style='height: 600px; width: 600px;   margin: "+borderWidth+"px; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
+$('#top').append("<div id=block_0 style='height: 600px; width: 600px; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
 $('#block_0')
 .on("click", function(e) {
   clickCount++;
