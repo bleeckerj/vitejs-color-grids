@@ -1,6 +1,11 @@
 import './style.css'
 import $, { event } from "jquery";
 import { ethers } from "ethers";
+import { randomColor } from "randomcolor";
+import chroma from "chroma-js";
+import domtoimage from 'dom-to-image';
+import ColorScheme from 'color-scheme';
+import { jsPDF } from "jspdf";
 
 var borderColor = "white";
 var borderWidth = 2;
@@ -9,21 +14,29 @@ var clickCount = 0;
 var blockIndex = 0;
 var blockBuild = new Array();
 
-/*
-const provider = new ethers.providers.Web3Provider(
-  window.ethereum,
-  "any"
-);
-await provider.send("eth_requestAccounts", []);
-const signer = provider.getSigner();
+var scheme = new ColorScheme;
+console.log(scheme);
+scheme.from_hue((Math.random() * 360)).scheme('tetrade').variation('default');
+var colors = scheme.colors();
+console.log(colors);
+// var colors = scheme.colors();
+// var scale = chroma.scale([`hsla(${Math.random() * 360}, 100%, 60%, 1)`,`hsla(${Math.random() * 360}, 40%, 90%, 1)`]).mode('hsl').colors(20);
+// console.log(scale);
+// /*
+// const provider = new ethers.providers.Web3Provider(
+//   window.ethereum,
+//   "any"
+// );
+// await provider.send("eth_requestAccounts", []);
+// const signer = provider.getSigner();
 
-(async function () {
-  let userAddress = await signer.getAddress();
-  document.getElementById("wallet").innerText =
-    "Your wallet is " + userAddress;
+// (async function () {
+//   let userAddress = await signer.getAddress();
+//   document.getElementById("wallet").innerText =
+//     "Your wallet is " + userAddress;
     
-})();
-*/
+// })();
+
 
 function getViewport () {
   // https://stackoverflow.com/a/8876069
@@ -150,11 +163,34 @@ function unfurlBlockBuild() {
   });
   console.log(text);
   document.getElementById("instructions").innerText = text;
+
+  return text;
 }
 
 
 function randomHsl() {
-  return `hsla(${Math.random() * 360}, 100%, 60%, 1)`
+  var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
+  var index = blockIndex % colors.length
+  console.log(index);
+  var h = chroma(colors[index]).hsl();
+  console.log(`hsla(`+h[0]+`,`+h[1]+`,`+h[2]+`,`+h[3]+`)`);
+  var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
+
+  //var r = randomColor({luminosity: 'bright', format: 'hsla', alpha: 1.0 });
+  //console.log(r);
+  //console.log(r);
+  //return colors[blockIndex];
+  return c;
+}
+
+function getRandomColor() {
+  // let rgb =  randomColor({ luminosity: 'light', format: 'hsla' });
+  // console.log(rgb);
+  // // let c = randomHsl();
+  // // console.log(c);
+  // console.log(randomHsl());
+  // return randomColor({ hue: 'light', format: 'hsla' });
+  return randomHsl();
 }
 
 function divideMeVert(source) {
@@ -184,7 +220,7 @@ function addToMeVert(source) {
   var top_of_new = parseInt(position.top + height/2)+"px";
   //console.log(top_of_new);
   blockIndex++;
-  var bgColor = randomHsl()
+  var bgColor = getRandomColor();
   var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
 
 
@@ -277,7 +313,7 @@ function addToMeLeft(source) {
   // console.log("new_left="+new_left+" width/2="+width/2);
   blockIndex++;
   // new template we're adding
-  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
   const myElement = document.getElementById('block_'+blockIndex);
@@ -338,17 +374,20 @@ document.querySelector('#app').innerHTML = `
 
 // $('#connect').append("<div style='' id=foo>Opt/Alt-Click folds Vertically Shit-Click folds Horizontally</div>");
 // $('#foo').append("<div id=top style='width: 90vw; height: 100vh;'></div>");
-var initSquareBlock = getViewportSize()+"px";
+var initSquareBlock = "900px";//getViewportSize()+"px";
 $('#bottomcontainer').css('width', initSquareBlock);
 $('#bottomcontainer').css('height', initSquareBlock);
 $('#topcontainer').css('width', initSquareBlock);
 $('#topcontainer').css('height', initSquareBlock);
 $('#blocks').css('width', initSquareBlock);
 $('#blocks').css('height', initSquareBlock);
+var top = 0;//$('#blocks').offset().top;
+var left = 0;//$('#blocks').offset().left;
+console.log(top+", "+left);
 // console.log(getViewportSize());
 // console.log($('#bottomcontainer').css("width"));
 // console.log(document.getElementById('bottomcontainer').getBoundingClientRect());
-$('#blocks').append("<div id=block_0 style='box-sizing: content-box; height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
@@ -403,13 +442,47 @@ recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
 //$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 100%;'><button class=button button5; style='font-size: 100%;'>GET INSTRUCTIONS</button></div>");
 // $('#howto').after('<div>TAP/CLICK FOLDS VERTICALLY</div><div>DOUBLE TAP/CLICK FOLDS HORIZONTALLY.</div><div>THERE IS NO UNDO.</div><div>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
-$('#howto').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
+$('#howto').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 // $('#howto').append('<div class="p-2 text-sm-left">HELLO</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
 $('#instructionbutton').after("<div class=p-3><button id=button class=button button1;>DONE</button></div>");
 $('#button').on("click", function(e) {
- unfurlBlockBuild();
+ var instrText = unfurlBlockBuild();
+
+
+//  var canvas = document.getElementById('blocks');
+//  console.log(canvas);
+//  var img    = canvas.toDataURL();
+//  console.log(img);
+
+var node = document.getElementById('blocks');
+console.log(node);
+var img;
+domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
+    .then(function (dataUrl) {
+        img = dataUrl;
+        console.log(img);
+
+        const doc = new jsPDF({
+          orientation: "portrait",
+          unit: "in",
+          format: "letter"
+        });
+
+        doc.setFontSize(8);
+        doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
+        doc.text(instrText,0.1, 4.2);
+        doc.save("instructions.pdf");
+
+        var link = document.createElement('a');
+        link.download = 'lewitt.jpeg';
+        link.href = dataUrl;
+        link.click();
+    });
+
+
+
 });
 //$('#instructions').after("<div style='position: absolute; left: "+new_left+"px; top: "+(top+100)+"px; text-align: left; font-size: 9px'></div>")
 
