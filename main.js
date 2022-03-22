@@ -79,12 +79,10 @@ function getLowestFraction(x0) {
 }
 
 function recordBlockBuild(sourceDiv, siblingDiv, direction) {
-  console.log("Why is this called?");
   if(sourceDiv != null) {
   var name_0 = sourceDiv.id;
   var width_0 = sourceDiv.clientWidth;
   var height_0 = sourceDiv.clientHeight;
-  console.log("HEIGHT="+height_0);
   var bgColor_0 = $("#"+sourceDiv.id).css("background-color");
 
   var name_1 = siblingDiv.id;
@@ -173,7 +171,6 @@ function divideMeVert(source) {
 }
 
 function addToMeVert(source) {
-  console.log($(source).css("height"));
   var x = parseFloat($(source).css("height"));
   //console.log(x);
   var height = Math.round(x);
@@ -182,10 +179,8 @@ function addToMeVert(source) {
   var width = parseFloat($(source).css("width"));
   var w = (width).toString()+"px";
   var position = $(source).position();
-  console.log("position.left="+position.left);
   var left = Math.round(position.left);
   console.log("left="+left);
-  //console.log("left="+position.left+" top="+position.top);
   var top_of_new = parseInt(position.top + height/2)+"px";
   //console.log(top_of_new);
   blockIndex++;
@@ -203,6 +198,7 @@ function addToMeVert(source) {
   mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
+  mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
 
 
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
@@ -210,16 +206,21 @@ function addToMeVert(source) {
   // we only want to trigger a tap, when we don't have detected a doubletap
   mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap doubletap", function(ev) {
+  mc.on("singletap doubletap press", function(ev) {
     document.getElementById("instructions").innerText = ''
     console.log(ev.type);
     if(ev.type == 'singletap') {
-      divideMeLeft(myElement);
-      addToMeLeft(myElement);
+      divideMeLeft(ev.target);
+      addToMeLeft(ev.target);
     }
     if(ev.type == 'doubletap') {
-     divideMeVert(myElement);
-     addToMeVert(myElement);
+     divideMeVert(ev.target);
+     addToMeVert(ev.target);
+    }
+    if(ev.type == 'press') {
+      console.log(ev.target);
+      divideMeVert(ev.target);
+      addToMeVert(ev.target);
     }
  });
 
@@ -279,13 +280,14 @@ function addToMeLeft(source) {
   var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
-  var myElement = document.getElementById('block_'+blockIndex);
+  const myElement = document.getElementById('block_'+blockIndex);
 
 // We create a manager object, which is the same as Hammer(), but without the presetted recognizers. 
   var mc = new Hammer.Manager(myElement);
   mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
+  mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
 
 
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
@@ -293,16 +295,22 @@ function addToMeLeft(source) {
   // we only want to trigger a tap, when we don't have detected a doubletap
   mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap doubletap", function(ev) {
+  mc.on("singletap doubletap press", function(ev) {
     document.getElementById("instructions").innerText = ''
     console.log(ev.type);
+    console.log(ev.target);
     if(ev.type == 'singletap') {
-      divideMeLeft(myElement);
-      addToMeLeft(myElement);
+      divideMeLeft(ev.target);
+      addToMeLeft(ev.target);
     }
     if(ev.type == 'doubletap') {
-     divideMeVert(myElement);
-     addToMeVert(myElement);
+     divideMeVert(ev.target);
+     addToMeVert(ev.target);
+    }
+    if(ev.type == 'press') {
+      console.log(ev.target);
+      divideMeVert(ev.target);
+      addToMeVert(ev.target);
     }
  });
 
@@ -349,7 +357,7 @@ var mc = new Hammer.Manager(myElement);
 mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
 // Single tap recognizer
 mc.add( new Hammer.Tap({ event: 'singletap' }) );
-
+mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
 
 // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
 mc.get('doubletap').recognizeWith('singletap');
@@ -357,16 +365,21 @@ mc.get('doubletap').recognizeWith('singletap');
 mc.get('singletap').requireFailure('doubletap');
 // single to the left
 // double vert
-mc.on("singletap doubletap", function(ev) {
+mc.on("singletap doubletap press", function(ev) {
   document.getElementById("instructions").innerText = ''
    console.log(ev.type);
    if(ev.type == 'singletap') {
-     divideMeLeft(myElement);
-     addToMeLeft(myElement);
+     divideMeLeft(ev.target);
+     addToMeLeft(ev.target);
    }
    if(ev.type == 'doubletap') {
-    divideMeVert(myElement);
-    addToMeVert(myElement);
+    divideMeVert(ev.target);
+    addToMeVert(ev.target);
+   }
+   if(ev.type == 'press') {
+     console.log(ev.target);
+     divideMeVert(ev.target);
+     addToMeVert(ev.target);
    }
 });
 // long-press comes from https://github.com/john-doherty/long-press-event
@@ -390,7 +403,7 @@ recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
 //$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 100%;'><button class=button button5; style='font-size: 100%;'>GET INSTRUCTIONS</button></div>");
 // $('#howto').after('<div>TAP/CLICK FOLDS VERTICALLY</div><div>DOUBLE TAP/CLICK FOLDS HORIZONTALLY.</div><div>THERE IS NO UNDO.</div><div>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
-$('#howto').append('<div style="font-size: 14px" class="p-2">TAP/CLICK FOLDS VERTICALLY <br/>DOUBLE TAP/CLICK FOLDS HORIZONTALLY. <br/>THERE IS NO UNDO. WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
+$('#howto').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
 // $('#howto').append('<div class="p-2 text-sm-left">HELLO</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
