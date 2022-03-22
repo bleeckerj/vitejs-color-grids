@@ -374,7 +374,7 @@ document.querySelector('#app').innerHTML = `
 
 // $('#connect').append("<div style='' id=foo>Opt/Alt-Click folds Vertically Shit-Click folds Horizontally</div>");
 // $('#foo').append("<div id=top style='width: 90vw; height: 100vh;'></div>");
-var initSquareBlock = "900px";//getViewportSize()+"px";
+var initSquareBlock = "600px";//getViewportSize()+"px";
 $('#bottomcontainer').css('width', initSquareBlock);
 $('#bottomcontainer').css('height', initSquareBlock);
 $('#topcontainer').css('width', initSquareBlock);
