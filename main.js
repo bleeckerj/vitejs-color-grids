@@ -480,10 +480,11 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         link.href = dataUrl;
         link.click();
     });
+}); // button on click
+$('#walletbutton').after("<div class=p-3><button id=button class=button button1;>CONNECT WALLET</button></div>");
+$('#walletbutton').on("click", function(e) {
 
-
-
-});
+})
 //$('#instructions').after("<div style='position: absolute; left: "+new_left+"px; top: "+(top+100)+"px; text-align: left; font-size: 9px'></div>")
 
 // document.addEventListener('long-press', function(e) {
