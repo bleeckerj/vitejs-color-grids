@@ -7,7 +7,7 @@ import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 
-var borderColor = "white";
+var borderColor = "black";
 var borderWidth = 2;
 var outlineOffset = 2;
 var clickCount = 0;
@@ -201,7 +201,7 @@ function divideMeVert(source) {
   //console.log(new_height.toString()+"px");
   var x = new_height.toString()+"px";
   $(source).animate({height: x}, 500);
-  $(source).css("outline", "2px solid white");
+  //$(source).css("outline", "2px solid white");
   //$(source).css({height: x});
   //$(source).height(x);
 }
@@ -221,7 +221,7 @@ function addToMeVert(source) {
   //console.log(top_of_new);
   blockIndex++;
   var bgColor = getRandomColor();
-  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
 
 
 
@@ -292,7 +292,7 @@ function divideMeLeft(source) {
   var x = new_height.toString()+"px";
   var y = new_width.toString()+"px";
   $(source).animate({width: y}, 500);
-  $(source).css("outline", "2px solid white");
+  //$(source).css("outline", "2px solid white");
   // $(source).css("float", "left");
 
   //$(dest).width(y);
@@ -313,7 +313,7 @@ function addToMeLeft(source) {
   // console.log("new_left="+new_left+" width/2="+width/2);
   blockIndex++;
   // new template we're adding
-  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
   const myElement = document.getElementById('block_'+blockIndex);
@@ -383,11 +383,11 @@ $('#blocks').css('width', initSquareBlock);
 $('#blocks').css('height', initSquareBlock);
 var top = 0;//$('#blocks').offset().top;
 var left = 0;//$('#blocks').offset().left;
-console.log(top+", "+left);
+//console.log(top+", "+left);
 // console.log(getViewportSize());
 // console.log($('#bottomcontainer').css("width"));
 // console.log(document.getElementById('bottomcontainer').getBoundingClientRect());
-$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth+"px solid "+borderColor+"; outline-offset: -"+outlineOffset+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
