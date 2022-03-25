@@ -193,39 +193,65 @@ function getRandomColor() {
   return randomHsl();
 }
 
-function divideMeVert(source) {
-  var height = parseFloat($(source).css("height"));
-  // var width = parseInt($(source).css("width"), 10);
-  var new_height = Math.round(height/2);
-  // var new_width = width;
-  //console.log(new_height.toString()+"px");
-  var x = new_height.toString()+"px";
-  $(source).animate({height: x}, 500);
+function divideMeHorizontal(event, factor=0.25) {
+  var source = event.target;
+  var divFactor = getDivisionFactor(source, event);
+  console.log("qH="+divFactor.qH);
+  
+  var oldHeight = Math.round(parseFloat($(source).css("height")));
+  var newHeight = Math.round((0.5)*oldHeight); // default to 50%
+  // bottom so the existing block is going to be 1-factor * height
+
+  if (divFactor.qH >= (1-factor)) {
+    newHeight = Math.round((1-factor)*oldHeight);
+  }
+  if (divFactor.qH <= factor) {
+    newHeight = Math.round(factor*oldHeight);
+  }
+  console.log("newHeight="+newHeight)
+  var newHeightStr = newHeight.toString()+"px";
+  $(source).animate({height: newHeightStr}, 500);
+  //$(source).height(newHeight);
   //$(source).css("outline", "2px solid white");
-  //$(source).css({height: x});
-  //$(source).height(x);
 }
 
-function addToMeVert(source) {
-  var x = parseFloat($(source).css("height"));
-  //console.log(x);
-  var height = Math.round(x);
+function addToMeHorizontal(event, factor=0.25) {
+  var source = event.target;
+  var divFactor = getDivisionFactor(source, event);
+  console.log("qH="+divFactor.qH);
+  var sourcePosition = $(source).position();
+
+  var sourceHeight = Math.round(parseFloat($(source).css("height")));
+  console.log("sourceHeight="+sourceHeight);
+
+  //var oldHeight = Math.round(sourceHeight);
   //console.log(height);
-  var h = Math.round(height/2).toString()+"px";
-  var width = parseFloat($(source).css("width"));
-  var w = (width).toString()+"px";
+  var top = parseInt(sourcePosition.top);
+  
+  var newHeight = Math.round((0.5)*sourceHeight);
+  var top = Math.round(sourcePosition.top + sourceHeight/2); // default divide in half
+
+  if (divFactor.qH >= (1-factor)) {
+    newHeight = Math.round((factor)*sourceHeight);
+    top = Math.round(sourcePosition.top + (1-factor)*sourceHeight)
+  }
+  if (divFactor.qH <= factor) {
+    newHeight = Math.round((1-factor)*sourceHeight);
+    top = Math.round(sourcePosition.top + factor*sourceHeight)
+    console.log("newHeight="+newHeight+", top="+top);
+  }  
+  var newHeightStr = newHeight.toString()+"px";
+  var topStr = top.toString()+"px";
+
+  var width = Math.round(parseFloat($(source).css("width")));
+  var widthStr = (width).toString()+"px";
+
   var position = $(source).position();
   var left = Math.round(position.left);
-  console.log("left="+left);
-  var top_of_new = parseInt(position.top + height/2)+"px";
-  //console.log(top_of_new);
   blockIndex++;
   var bgColor = getRandomColor();
-  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+top_of_new+"; height: "+h+"; width: "+w+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+topStr+"; height: "+newHeightStr+"; width: "+widthStr+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";
 
-
-
-  // var template = "<div id='block_"+i+ "' style='float: left;  position: relative; height: "+h+"; width: "+w+";  outline: 2px solid white; outline-offset: -2px;background-color:"+randomHsl()+"'></div>";// $('#redbox').html();
   $(source).after(template);
   var myElement = document.getElementById('block_'+blockIndex);
 
@@ -235,8 +261,6 @@ function addToMeVert(source) {
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
   mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
-
-
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
   mc.get('doubletap').recognizeWith('singletap');
   // we only want to trigger a tap, when we don't have detected a doubletap
@@ -250,35 +274,15 @@ function addToMeVert(source) {
       addToMeLeft(ev.target);
     }
     if(ev.type == 'doubletap') {
-     divideMeVert(ev.target);
-     addToMeVert(ev.target);
+     divideMeHorizontal(ev.target);
+     addToMeHorizontal(ev.target);
     }
     if(ev.type == 'press') {
       console.log(ev.target);
-      divideMeVert(ev.target);
-      addToMeVert(ev.target);
+      divideMeHorizontal(ev.target);
+      addToMeHorizontal(ev.target);
     }
  });
-
-
-  // $("#block_"+blockIndex).on('click', function(e) { 
-  //   //document.getElementById("instructions").innerText =''
-  //   if (e.altKey) {
-  //     divideMeLeft(this); 
-  //     addToMeLeft(this);
-  //     }
-  //     if (e.shiftKey) {
-  //       divideMeVert(this); 
-  //       addToMeVert(this);
-  //     }
-  //  });
-  // //  var s = source.style.backgroundColor
-  //  console.log(s);
-  //  console.log(source.id);
-  //  console.log("#block_"+i);
-  //  var d = document.querySelector("#block_"+i)
-  //  recordStep( source.id, source.style.backgroundColor, source.style.width, source.style.height,  "#block_"+i, bgColor, w, h, "HORIZONTAL");
-  
    recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL");
 }
 
@@ -288,37 +292,36 @@ function divideMeLeft(source) {
   var height = Math.round(parseFloat($(source).css("height")));
   var width = Math.round(parseFloat($(source).css("width")));
   var new_height = height;
-  var new_width = Math.round((width) / 2);// + borderWidth;
+  var new_width = Math.round((width) / 2);
   var x = new_height.toString()+"px";
   var y = new_width.toString()+"px";
   $(source).animate({width: y}, 500);
   //$(source).css("outline", "2px solid white");
   // $(source).css("float", "left");
-
-  //$(dest).width(y);
-  // $(dest).css({width: y});
 }
 
 
 function addToMeLeft(source) {
-  var width = parseFloat($(source).css("width"));
-  var w = (Math.round(width/2)).toString()+"px";
-  var height = parseFloat($(source).css("height"));
-  var h = height.toString()+"px";
-  var position = $(source).position();
-  var top = parseInt(position.top);
-  var left = parseInt(position.left);
-  console.log("top="+top+" left="+left+" right="+parseInt(left+width/2));
-  var new_left = left+Math.round(width/2);
+  var sourceWidth = parseFloat($(source).css("width"));
+  var destWidth = (Math.round(sourceWidth/2)).toString()+"px";
+  var sourceHeight = parseFloat($(source).css("height"));
+  var destHeight = sourceHeight.toString()+"px";
+  var sourcePosition = $(source).position();
+  var top = parseInt(sourcePosition.top);
+  var left = parseInt(sourcePosition.left);
+  console.log("top="+top+" left="+left+" right="+parseInt(left+sourceWidth/2));
+  var newLeft = left+Math.round(sourceWidth/2);
   // console.log("new_left="+new_left+" width/2="+width/2);
   blockIndex++;
   // new template we're adding
-  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+new_left+"px; top: "+top+"px; height: "+h+"; width: "+w+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
+  var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+newLeft+"px; top: "+top+"px; height: "+destHeight+"; width: "+destWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
 
   $(source).after(template);
   const myElement = document.getElementById('block_'+blockIndex);
 
-// We create a manager object, which is the same as Hammer(), but without the presetted recognizers. 
+
+  /** BOILERPLATE TO ADD A NEW EVENT TO THE NEW BLOCK */
+  // We create a manager object, which is the same as Hammer(), but without the presetted recognizers. 
   var mc = new Hammer.Manager(myElement);
   mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
   // Single tap recognizer
@@ -333,39 +336,41 @@ function addToMeLeft(source) {
 
   mc.on("singletap doubletap press", function(ev) {
     document.getElementById("instructions").innerText = ''
-    console.log(ev.type);
-    console.log(ev.target);
+    // console.log(ev.type);
+    // console.log(ev.target);
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
     }
     if(ev.type == 'doubletap') {
-     divideMeVert(ev.target);
-     addToMeVert(ev.target);
+     divideMeHorizontal(ev.target);
+     addToMeHorizontal(ev.target);
     }
     if(ev.type == 'press') {
       console.log(ev.target);
-      divideMeVert(ev.target);
-      addToMeVert(ev.target);
+      divideMeHorizontal(ev.target);
+      addToMeHorizontal(ev.target);
     }
  });
 
-  // $("#block_"+blockIndex).on('click', function(e) { 
-  //   //document.getElementById("instructions").innerText = ''
-  //   if (e.altKey) {
-  //     divideMeLeft(this); 
-  //     addToMeLeft(this);
-  //     }
-  //     if (e.shiftKey) {
-  //       divideMeVert(this);
-  //       addToMeVert(this);
-    
-  //     }
-
-  // });
   recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
 
 }
+
+// target is a DOM element
+function getDivisionFactor(target, event, direction="horizontal") {
+  var targetRect = target.getBoundingClientRect();
+  //console.log(event.center.x +", "+event.center.y);
+  var xRel = event.center.x - targetRect.left; //x position within/relative-to the element.
+  var yRel = event.center.y - targetRect.top;  //y position within/relative-to the element.
+  //console.log("From Left? : " + xRel + " ; From Top? : " + yRel + ".");
+  //console.log("Height "+targetRect.height);
+  var qH = yRel / targetRect.height; // what fraction of height are we from the top of the element
+  var qV = xRel / targetRect.width;
+  console.log("qH="+qH+" qV="+qV);
+  return {qH: qH, qV: qV};
+}
+
 //Opt/Alt-Click folds Vertically Shit-Click folds Horizontally
 
 document.querySelector('#app').innerHTML = `
@@ -406,19 +411,27 @@ mc.get('singletap').requireFailure('doubletap');
 // double vert
 mc.on("singletap doubletap press", function(ev) {
   document.getElementById("instructions").innerText = ''
-   console.log(ev.type);
+  // var rect = ev.target.getBoundingClientRect();
+  // console.log(ev.center.x +", "+ev.center.y);
+  // var x = ev.center.x - rect.left; //x position within the element.
+  // var y = ev.center.y - rect.top;  //y position within the element.
+  // console.log("From Left? : " + x + " ; From Top? : " + y + ".");
+  // console.log("Height "+rect.height);
+  // var qH = y / rect.height;
+  // console.log("qH="+qH);
+
    if(ev.type == 'singletap') {
      divideMeLeft(ev.target);
      addToMeLeft(ev.target);
    }
    if(ev.type == 'doubletap') {
-    divideMeVert(ev.target);
-    addToMeVert(ev.target);
+    divideMeHorizontal(ev.target);
+    addToMeHorizontal(ev.target);
    }
    if(ev.type == 'press') {
      console.log(ev.target);
-     divideMeVert(ev.target);
-     addToMeVert(ev.target);
+     divideMeHorizontal(ev);
+     addToMeHorizontal(ev);
    }
 });
 // long-press comes from https://github.com/john-doherty/long-press-event
@@ -429,32 +442,12 @@ mc.on("singletap doubletap press", function(ev) {
 $('#top').append("Hello");
 recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
-// console.log($('#block_0').width());
-// console.log($('#block_0').position().left);
-// var left = $('#block_0').position().left;
-// var new_left = left+$('#block_0').width()+20;
-// console.log(left);
-// var top = $('#block_0').position().top-4;
-// var x = $('#block_0').height();
-// //console.log(top+" "+x);
-// var h = top+x+20
-//console.log(h);
-
-//$('#block_0').after("<div id=button style='position: absolute; left: "+new_left+"px; top: "+top+"px; font-size: 100%;'><button class=button button5; style='font-size: 100%;'>GET INSTRUCTIONS</button></div>");
-// $('#howto').after('<div>TAP/CLICK FOLDS VERTICALLY</div><div>DOUBLE TAP/CLICK FOLDS HORIZONTALLY.</div><div>THERE IS NO UNDO.</div><div>WHEN YOU CLICK \'DONE\' YOU\'LL GET A PDF OF INSTRUCTIONS.</div>')
 $('#howto').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
-// $('#howto').append('<div class="p-2 text-sm-left">HELLO</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
 $('#instructionbutton').after("<div class=p-3><button id=button class=button button1;>DONE</button></div>");
 $('#button').on("click", function(e) {
  var instrText = unfurlBlockBuild();
-
-
-//  var canvas = document.getElementById('blocks');
-//  console.log(canvas);
-//  var img    = canvas.toDataURL();
-//  console.log(img);
 
 var node = document.getElementById('blocks');
 console.log(node);
@@ -482,11 +475,4 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
     });
 }); // button on click
 $('#walletbutton').after("<div class=p-3><button id=button class=button button1;>CONNECT WALLET</button></div>");
-$('#walletbutton').on("click", function(e) {
-
-})
-//$('#instructions').after("<div style='position: absolute; left: "+new_left+"px; top: "+(top+100)+"px; text-align: left; font-size: 9px'></div>")
-
-// document.addEventListener('long-press', function(e) {
-//   console.log(e.target);
-// });
+$('#walletbutton').on("click", function(e) {})
