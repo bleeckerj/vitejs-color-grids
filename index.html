@@ -1,51 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <title>$LEWITTTTTTTTT App</title>
   </head>
   <body>
     <!-- <script type="module" src="/main.js"></script> -->
-    <div id="topcontainer" class="container" style="background-color : rgba(1, 1, 1, 0)">
+    <div id="topcontainer" class="container" style="background-color : rgba(140,140,140)">
       <div id="app">
         APP
       </div>
-      <div class="row justify-content-center">
-        <div class="col text-center">
+      <div class="row">
+        <div class="col">
         <div id="lewitt" class="text-center" style="position: relative; top: 0px; left: 0px; ">
           $LEWITTTTTTTTT
         </div>
+        </div>
+        </div>
+        <div class="row">
+          <div class="col">
         <div class="container">
-          <div class="row">
-            <div style="position: relative; top: 0px; left: 0px;" id="blocks">
+          <div class="row" style="background-color: rgb(200,200,200);">
+            <div class="col" style="background-color: rgb(0,0,0);">
+            <div style="position: relative; top: 0px; left: -35px;" id="blocks">
             </div>
+            <!-- <div style="position: relative; top: -100px; right: -400px;" class="col">
+              Hello
+            </div> -->
+            </div>
+            
         </div>  
-        </div>   
-      </div>
+        </div>
+      </div>   
       </div>
       </div>
      
-    <div id="bottomcontainer" class="container" style="background-color : rgba(0,0,0,0.0)">
-      <div class="row">
-        <div id="howto" class="col p-3">
-          <!-- <div class="p-0">DO THIS TO DO THAT. DO THAT TO DO THIS.</div>
-          <div class="p-0">NO UNDO. YOU HAVE NO MORE THAN 9 CLICKS.</div>
-          <div class="p-0">THERE'S NO UNDO.</div>
-          <div class="p-0">WHEN YOU CLICK 'DONE' YOU'LL GET A PDF OF INSTRUCTIONS.</div> -->
-
-        </div>
-    </div>
-    <div class="row justify-content-center">
-      <div id="bar" class="col text-center">
-        <div style="font-size: 9px; text-align: center;">CHIPS AHOO</div>
-        <div id="walletbutton"></div>
-        <div id="instructionbutton"></div>
+    <div id="bottomcontainer" class="container" style="position: relative; top: 50px; left: 0px;background-color : rgba(158, 34, 34, 0)">
+    <div class="row" style="margin-top: 1rem">
+      <div class="col bg-primary">
+        
       </div>
+    </div>
+    <div class="row" style="margin-top: 1rem; background-color : rgb(240,240,240);">
+      <div class="col" id="picker">
+        <input id="cp1" />
+        <!-- COLOR PICKER 1 <input data-jscolor="{
+          onChange: 'update(this, \'#pr1\')',
+          onInput: 'update(this, \'#pr2\')',
+          alpha:0.7, value:'CCFFAA'}"/> -->
+      </div>
+      <div class="col">
+        COLOR PICKER 2 <input id="cp2" data-jscolor="{format: 'hex', onChange: 'wtf(this)'}"/>
+
+      </div>
+    </div>
+    <div class="row justify-content-center" style="margin-top: 2rem;">
+      <div class="col">
+        <div style="font-size: 9px; text-align: center;">CHIPS AHOO</div>
+        </div>
+        <div class="col">
+        <div id="walletbutton"></div>
+        </div>
+        <div class="col">
+        <div id="instructionbutton"></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
       <div id="instructions" style="font-size: 9px"></div>
     </div>
+      </div>
     <div class="row justify-content-center">
       <div class="col">
         <div style="text-align: center;"></div>
@@ -72,9 +101,12 @@
     <script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
+    <script src="scripts/jscolor.js"></script>
 
     <!-- This is our example code -->
-    <script type="text/javascript" src="./example.js"></script>
-    <!-- <link rel="stylesheet" href="./style.css"/> -->
+    <!-- <script type="text/javascript" src="./example.js"></script>
+    <link rel="stylesheet" href="./style.css"/> -->
+
     </body>
+
 </html>

@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 package-lock.json
+jscolor-2.4.8.zip
+jscolor-examples.html
+jscolor.js
+jscolor.min.js

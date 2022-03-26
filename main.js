@@ -6,6 +6,8 @@ import chroma from "chroma-js";
 import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
+import jscolor from "jscolor";
+// import spectrumColorpicker from 'spectrum-colorpicker2';
 
 var borderColor = "black";
 var borderWidth = 2;
@@ -14,12 +16,7 @@ var clickCount = 0;
 var blockIndex = 0;
 var blockBuild = new Array();
 
-var scheme = new ColorScheme;
-//console.log(scheme);
-scheme.from_hue((Math.random() * 360)).scheme('tetrade').variation('default');
-var colors = scheme.colors();
-//colors = ['ff0000', '00ff00', '0000ff'];
-console.log(colors);
+
 // var colors = scheme.colors();
 // var scale = chroma.scale([`hsla(${Math.random() * 360}, 100%, 60%, 1)`,`hsla(${Math.random() * 360}, 40%, 90%, 1)`]).mode('hsl').colors(20);
 // console.log(scale);
@@ -37,37 +34,9 @@ console.log(colors);
 //     "Your wallet is " + userAddress;
     
 // })();
+computeColorsArray();
+console.log(colors)
 
-
-function getViewport () {
-  // https://stackoverflow.com/a/8876069
-  const width = Math.max(
-    document.documentElement.clientWidth,
-    window.innerWidth || 0
-  )
-  if (width <= 576) return 'xs'
-  if (width <= 768) return 'sm'
-  if (width <= 992) return 'md'
-  if (width <= 1200) return 'lg'
-  return 'xl'
-}
-
-function getViewportSize() {
-  const width = Math.max(
-    document.documentElement.clientWidth,
-    window.innerWidth || 0
-  )
-  const height = Math.max(
-    document.documentElement.clientHeight,
-    window.innerHeight || 0
-  )
-  if (width > height) {
-    return Math.round(height*0.75);
-  } else {
-    return Math.round(width*0.75);
-  }
-  
-}
 
 function getLowestFraction(x0) {
   var eps = 1.0E-15;
@@ -169,11 +138,23 @@ function unfurlBlockBuild() {
   return text;
 }
 
+var colors;
+function computeColorsArray(start = '#fafa6e', end = '#2A4858') {
+  //var scheme = new ColorScheme;
+  //console.log(scheme);
+  //scheme.from_hue((Math.random() * 360)).scheme('tetrade').variation('default');
+  //var colors; = scheme.colors();
+  //console.log(chroma.scale(['#fafa6e','#2A4858'])(0.5).hsl());
+//colors = chroma.scale(['#fafa6e', '#fafa6e']).mode('lch').colors(6); // start and finish
+  colors = chroma.scale([start, end]).colors(12)//colors = ['ff0000', '00ff00', '0000ff'];
+  console.log(colors);
+}
 
 function randomHsl() {
   //var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
   var index = blockIndex % colors.length
   var h = chroma(colors[index]).hsl();
+  console.log(h);
   //console.log(`hsla(`+h[0]+`,`+h[1]+`,`+h[2]+`,`+h[3]+`)`);
   var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
 
@@ -182,6 +163,12 @@ function randomHsl() {
   //console.log(r);
   //return colors[blockIndex];
   return c;
+}
+
+function randomRGB() {
+  var h = chroma(colors[0]);
+  console.log(h.hex());
+  return h;
 }
 
 function getRandomColor() {
@@ -275,6 +262,7 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   var left = Math.round(position.left);
   blockIndex++;
   var bgColor = getRandomColor();
+  
   var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+topStr+"; height: "+newElementHeightStr+"; width: "+widthStr+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";
 
   $(source).after(template);
@@ -394,13 +382,12 @@ function getDivisionFactor(target, event, direction="horizontal") {
 
 //Opt/Alt-Click folds Vertically Shit-Click folds Horizontally
 
-document.querySelector('#app').innerHTML = `
-<!--div id=connect style='width:100vw; height 10vh;'><button class=button button5; style='margin-bottom: 40px;font-size: 100%;'>CONNECT WALLET</button></div-->
-`
+// document.querySelector('#app').innerHTML = `
+// `
 
 // $('#connect').append("<div style='' id=foo>Opt/Alt-Click folds Vertically Shit-Click folds Horizontally</div>");
 // $('#foo').append("<div id=top style='width: 90vw; height: 100vh;'></div>");
-var initSquareBlock = "600px";//getViewportSize()+"px";
+var initSquareBlock = "800px";//getViewportSize()+"px";
 $('#bottomcontainer').css('width', initSquareBlock);
 $('#bottomcontainer').css('height', initSquareBlock);
 $('#topcontainer').css('width', initSquareBlock);
@@ -459,10 +446,10 @@ mc.on("singletap press", function(ev) {
 $('#top').append("Hello");
 recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
-$('#howto').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
+$('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
-$('#instructionbutton').after("<div class=p-3><button id=button class=button button1;>DONE</button></div>");
+$('#instructionbutton').after("<button id=button class=button>DONE</button>");
 $('#button').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
@@ -491,5 +478,24 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         link.click();
     });
 }); // button on click
-$('#walletbutton').after("<div class=p-3><button id=button class=button button1;>CONNECT WALLET</button></div>");
+$('#walletbutton').after("<button id=button class=button button1;>CONNECT WALLET</button>");
+
 $('#walletbutton').on("click", function(e) {})
+//$(function() {
+ 
+  var picker_1 = new JSColor('#cp1');
+  document.getElementById('cp1').jscolor.onChange = function() {
+    console.log(this.toHEXString());
+    computeColorsArray(this.toHEXString(),document.getElementById('cp2').jscolor.toHEXString() );
+    document.getElementById('block_0').style.backgroundColor = this.toHEXString();
+  }
+  console.log(randomRGB());
+  picker_1.fromString(colors[0]);
+  console.log(picker_1);
+  var picker_2 = new JSColor('#cp2');
+  //document.getElementById('cp2').jscolor.show();
+  document.getElementById('cp2').jscolor.onChange = function() {
+    console.log(this.toHEXString());
+  }
+  picker_2.fromString(colors[colors.length-1]);
+
