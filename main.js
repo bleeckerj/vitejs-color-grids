@@ -15,9 +15,10 @@ var blockIndex = 0;
 var blockBuild = new Array();
 
 var scheme = new ColorScheme;
-console.log(scheme);
+//console.log(scheme);
 scheme.from_hue((Math.random() * 360)).scheme('tetrade').variation('default');
 var colors = scheme.colors();
+//colors = ['ff0000', '00ff00', '0000ff'];
 console.log(colors);
 // var colors = scheme.colors();
 // var scale = chroma.scale([`hsla(${Math.random() * 360}, 100%, 60%, 1)`,`hsla(${Math.random() * 360}, 40%, 90%, 1)`]).mode('hsl').colors(20);
@@ -93,28 +94,29 @@ function getLowestFraction(x0) {
 
 function recordBlockBuild(sourceDiv, siblingDiv, direction) {
   if(sourceDiv != null) {
-  var name_0 = sourceDiv.id;
-  var width_0 = sourceDiv.clientWidth;
-  var height_0 = sourceDiv.clientHeight;
-  var bgColor_0 = $("#"+sourceDiv.id).css("background-color");
+    var name_0 = sourceDiv.id;
+    var width_0 = sourceDiv.clientWidth;
+    var height_0 = sourceDiv.clientHeight;
+    var bgColor_0 = $("#"+sourceDiv.id).css("background-color");
+    console.log("Recorded: "+sourceDiv.clientHeight+" "+siblingDiv.clientHeight);
 
-  var name_1 = siblingDiv.id;
-  var width_1 = siblingDiv.clientWidth;
-  var height_1 = siblingDiv.clientHeight;
-  var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
+    var name_1 = siblingDiv.id;
+    var width_1 = siblingDiv.clientWidth;
+    var height_1 = siblingDiv.clientHeight;
+    var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
 
-  blockBuild.push([name_0, width_0, height_0, bgColor_0, name_1, width_1, height_1, bgColor_1, direction]);
-  } else {
-  var name_1 = siblingDiv.id;
-  var width_1 = siblingDiv.clientWidth;
-  var height_1 = siblingDiv.clientHeight;
-  var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
+    blockBuild.push([name_0, width_0, height_0, bgColor_0, name_1, width_1, height_1, bgColor_1, direction]);
+} else {
+    var name_1 = siblingDiv.id;
+    var width_1 = siblingDiv.clientWidth;
+    var height_1 = siblingDiv.clientHeight;
+    var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
 
   blockBuild.push([null, null, null, null, name_1, width_1, height_1, bgColor_1, direction]);
   }
   // console.log(direction);
   // blockBuild.push([sourceDiv, siblingDiv, direction]);
-  // console.log(blockBuild);
+  console.log(blockBuild);
 }
 
 
@@ -127,7 +129,7 @@ function unfurlBlockBuild() {
     var height_0 = element[2];
     var ratio_0 = getLowestFraction(width_0/height_0);
     var bgColor_0 = element[3];
-    //console.log(bgColor_0);
+    console.log(element);
 
     var name_1 = element[4];
     var width_1 = element[5];
@@ -138,7 +140,7 @@ function unfurlBlockBuild() {
     text += stepNumber+". "
     if (direction != "PLACE") {
       if (direction == "HORIZONTAL") {
-        text += "Divide the block referred to as '"+name_0+"' along the "+direction+" axis, making its width now "+width_0+" units and height now "+height_1+" units (a size ratio of "+ratio_1+").";
+        text += "Divide the block referred to as '"+name_0+"' along the "+direction+" axis, making its width now "+width_0+" units and height now "+height_0+" units (a size ratio of "+ratio_0+").";
         text += "\r\nAdd a new block below '"+name_0+"' with a width of "+width_1+" units and a height of "+height_1+" units (a size ratio of "+ratio_1+").";
         
         text += "\r\nRefer to this block as '"+name_1+"' and make its color correspond to an RGB value of "+bgColor_1;
@@ -161,7 +163,7 @@ function unfurlBlockBuild() {
     text += "\r\n\r\n";
     stepNumber++;
   });
-  console.log(text);
+  //console.log(text);
   document.getElementById("instructions").innerText = text;
 
   return text;
@@ -169,11 +171,10 @@ function unfurlBlockBuild() {
 
 
 function randomHsl() {
-  var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
+  //var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
   var index = blockIndex % colors.length
-  console.log(index);
   var h = chroma(colors[index]).hsl();
-  console.log(`hsla(`+h[0]+`,`+h[1]+`,`+h[2]+`,`+h[3]+`)`);
+  //console.log(`hsla(`+h[0]+`,`+h[1]+`,`+h[2]+`,`+h[3]+`)`);
   var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
 
   //var r = randomColor({luminosity: 'bright', format: 'hsla', alpha: 1.0 });
@@ -193,54 +194,78 @@ function getRandomColor() {
   return randomHsl();
 }
 
-function divideMeHorizontal(event, factor=0.25) {
+function divideMeHorizontal(event, factor=0.1) {
   var source = event.target;
+  var oldHeight = Math.round(parseFloat($(source).css("height")));
+  if (oldHeight <= 10) {
+    return;
+  }
   var divFactor = getDivisionFactor(source, event);
   console.log("qH="+divFactor.qH);
   
-  var oldHeight = Math.round(parseFloat($(source).css("height")));
   var newHeight = Math.round((0.5)*oldHeight); // default to 50%
   // bottom so the existing block is going to be 1-factor * height
+  if (divFactor.qH <= factor || divFactor.qH > (1-factor)) {
 
-  if (divFactor.qH >= (1-factor)) {
-    newHeight = Math.round((1-factor)*oldHeight);
+    if (divFactor.qH >= (1-factor)) {
+      newHeight = Math.round((1-factor)*oldHeight);
+    }
+    if (divFactor.qH <= factor) {
+      newHeight = Math.round(factor*oldHeight);
+    }
+  } else {
+    console.log("WTF WTF WTF");
+    newHeight = Math.round((0.5)*oldHeight);
   }
-  if (divFactor.qH <= factor) {
-    newHeight = Math.round(factor*oldHeight);
-  }
-  console.log("newHeight="+newHeight)
+  console.log("newHeight="+newHeight+" oldHeight"+oldHeight);
   var newHeightStr = newHeight.toString()+"px";
-  $(source).animate({height: newHeightStr}, 500);
-  //$(source).height(newHeight);
+
+  $(source).height(newHeight);
+  addToMeHorizontal(event, oldHeight, divFactor, factor);
+
+  
   //$(source).css("outline", "2px solid white");
 }
 
-function addToMeHorizontal(event, factor=0.25) {
+function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   var source = event.target;
-  var divFactor = getDivisionFactor(source, event);
-  console.log("qH="+divFactor.qH);
+  //var divFactor = getDivisionFactor(source, event);
+  //console.log("qH="+divFactor.qH);
   var sourcePosition = $(source).position();
-
-  var sourceHeight = Math.round(parseFloat($(source).css("height")));
-  console.log("sourceHeight="+sourceHeight);
-
-  //var oldHeight = Math.round(sourceHeight);
-  //console.log(height);
-  var top = parseInt(sourcePosition.top);
+  // console.log($(source).position());
+  // console.log($(source).height());
+  var sourceOldHeight = oldHeight;//Math.round(parseFloat($(source).css("height")));
+  var sourceNewHeight = $(source).height();
+  var sourceBottom = $(source).position().top + $(source).offset().top + $(source).outerHeight(true);
+  //var top = parseInt(sourcePosition.top);
   
-  var newHeight = Math.round((0.5)*sourceHeight);
-  var top = Math.round(sourcePosition.top + sourceHeight/2); // default divide in half
-
-  if (divFactor.qH >= (1-factor)) {
-    newHeight = Math.round((factor)*sourceHeight);
-    top = Math.round(sourcePosition.top + (1-factor)*sourceHeight)
+  var newElementHeight = Math.round((0.5)*sourceOldHeight);
+  var top =  Math.round(sourcePosition.top + 0.5*sourceOldHeight); // default divide in half
+  
+  if (divFactor.qH <= factor || divFactor.qH > (1-factor)) {
+    if (divFactor.qH > (1-factor)) {
+      newElementHeight = Math.round((factor)*sourceOldHeight);
+      //console.log("Big Top");
+      //top = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
+    } 
+    if (divFactor.qH <= factor) {
+      newElementHeight = Math.round((1-factor)*sourceOldHeight);
+      //console.log("Big Bottom");
+      //top = Math.round(sourceBottom);//factor*sourceHeight)
+    } 
+  } else {
+    // console.log("NEITHER NEITHER NEITHER");
+    // console.log(divFactor.qH+" "+sourceNewHeight+" "+sourceOldHeight);
+    newElementHeight = Math.round(0.5*sourceOldHeight);
   }
-  if (divFactor.qH <= factor) {
-    newHeight = Math.round((1-factor)*sourceHeight);
-    top = Math.round(sourcePosition.top + factor*sourceHeight)
-    console.log("newHeight="+newHeight+", top="+top);
-  }  
-  var newHeightStr = newHeight.toString()+"px";
+  top = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
+
+  console.log(sourceOldHeight - sourceNewHeight);
+
+  console.log("sourceNewHeight="+sourceNewHeight+", sourceOldHeight="+sourceOldHeight+", newHeight="+newElementHeight+", new Element Top="+top+", sourceBottom="+sourceBottom);
+  //console.log(source)
+
+  var newElementHeightStr = newElementHeight.toString()+"px";
   var topStr = top.toString()+"px";
 
   var width = Math.round(parseFloat($(source).css("width")));
@@ -250,7 +275,7 @@ function addToMeHorizontal(event, factor=0.25) {
   var left = Math.round(position.left);
   blockIndex++;
   var bgColor = getRandomColor();
-  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+topStr+"; height: "+newHeightStr+"; width: "+widthStr+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";
+  var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+topStr+"; height: "+newElementHeightStr+"; width: "+widthStr+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";
 
   $(source).after(template);
   var myElement = document.getElementById('block_'+blockIndex);
@@ -273,17 +298,17 @@ function addToMeHorizontal(event, factor=0.25) {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
     }
-    if(ev.type == 'doubletap') {
-     divideMeHorizontal(ev.target);
-     addToMeHorizontal(ev.target);
-    }
     if(ev.type == 'press') {
-      console.log(ev.target);
-      divideMeHorizontal(ev.target);
-      addToMeHorizontal(ev.target);
+      //console.log(ev);
+      divideMeHorizontal(ev, 0.25);
+      
+
     }
  });
-   recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL");
+ console.log(document.querySelector("#"+source.id).offsetHeight);
+
+ recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL");
+  // console.log(document.querySelector("#block_"+blockIndex));
 }
 
 function divideMeLeft(source) {
@@ -341,19 +366,15 @@ function addToMeLeft(source) {
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
-    }
-    if(ev.type == 'doubletap') {
-     divideMeHorizontal(ev.target);
-     addToMeHorizontal(ev.target);
+      recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
+
     }
     if(ev.type == 'press') {
-      console.log(ev.target);
-      divideMeHorizontal(ev.target);
-      addToMeHorizontal(ev.target);
+      divideMeHorizontal(ev);
+      //addToMeHorizontal(ev);
     }
  });
 
-  recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
 
 }
 
@@ -367,7 +388,7 @@ function getDivisionFactor(target, event, direction="horizontal") {
   //console.log("Height "+targetRect.height);
   var qH = yRel / targetRect.height; // what fraction of height are we from the top of the element
   var qV = xRel / targetRect.width;
-  console.log("qH="+qH+" qV="+qV);
+  //console.log("qH="+qH+" qV="+qV+" "+targetRect);
   return {qH: qH, qV: qV};
 }
 
@@ -409,7 +430,7 @@ mc.get('doubletap').recognizeWith('singletap');
 mc.get('singletap').requireFailure('doubletap');
 // single to the left
 // double vert
-mc.on("singletap doubletap press", function(ev) {
+mc.on("singletap press", function(ev) {
   document.getElementById("instructions").innerText = ''
   // var rect = ev.target.getBoundingClientRect();
   // console.log(ev.center.x +", "+ev.center.y);
@@ -424,14 +445,10 @@ mc.on("singletap doubletap press", function(ev) {
      divideMeLeft(ev.target);
      addToMeLeft(ev.target);
    }
-   if(ev.type == 'doubletap') {
-    divideMeHorizontal(ev.target);
-    addToMeHorizontal(ev.target);
-   }
    if(ev.type == 'press') {
-     console.log(ev.target);
-     divideMeHorizontal(ev);
-     addToMeHorizontal(ev);
+     divideMeHorizontal(ev, 0.25);
+     //addToMeHorizontal(ev);
+     
    }
 });
 // long-press comes from https://github.com/john-doherty/long-press-event
@@ -450,12 +467,12 @@ $('#button').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
 var node = document.getElementById('blocks');
-console.log(node);
+//console.log(node);
 var img;
 domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
     .then(function (dataUrl) {
         img = dataUrl;
-        console.log(img);
+        //console.log(img);
 
         const doc = new jsPDF({
           orientation: "portrait",
