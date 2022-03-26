@@ -67,7 +67,7 @@ function recordBlockBuild(sourceDiv, siblingDiv, direction) {
     var width_0 = sourceDiv.clientWidth;
     var height_0 = sourceDiv.clientHeight;
     var bgColor_0 = $("#"+sourceDiv.id).css("background-color");
-    console.log("Recorded: "+sourceDiv.clientHeight+" "+siblingDiv.clientHeight);
+    //console.log("Recorded: "+sourceDiv.clientHeight+" "+siblingDiv.clientHeight);
 
     var name_1 = siblingDiv.id;
     var width_1 = siblingDiv.clientWidth;
@@ -146,7 +146,7 @@ function computeColorsArray(start = '#fafa6e', end = '#2A4858') {
   //var colors; = scheme.colors();
   //console.log(chroma.scale(['#fafa6e','#2A4858'])(0.5).hsl());
 //colors = chroma.scale(['#fafa6e', '#fafa6e']).mode('lch').colors(6); // start and finish
-  colors = chroma.scale([start, end]).colors(12)//colors = ['ff0000', '00ff00', '0000ff'];
+  colors = chroma.scale([start, end]).colors(16)//colors = ['ff0000', '00ff00', '0000ff'];
   console.log(colors);
 }
 
@@ -155,7 +155,6 @@ function randomHsl() {
   var index = blockIndex % colors.length
   var h = chroma(colors[index]).hsl();
   console.log(h);
-  //console.log(`hsla(`+h[0]+`,`+h[1]+`,`+h[2]+`,`+h[3]+`)`);
   var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
 
   //var r = randomColor({luminosity: 'bright', format: 'hsla', alpha: 1.0 });
@@ -181,7 +180,7 @@ function getRandomColor() {
   return randomHsl();
 }
 
-function divideMeHorizontal(event, factor=0.1) {
+function divideMeHorizontal(event, factor=0.25) {
   var source = event.target;
   var oldHeight = Math.round(parseFloat($(source).css("height")));
   if (oldHeight <= 10) {
@@ -194,23 +193,30 @@ function divideMeHorizontal(event, factor=0.1) {
   // bottom so the existing block is going to be 1-factor * height
   if (divFactor.qH <= factor || divFactor.qH > (1-factor)) {
 
-    if (divFactor.qH >= (1-factor)) {
+    if (divFactor.qH > (1-factor)) {
       newHeight = Math.round((1-factor)*oldHeight);
     }
-    if (divFactor.qH <= factor) {
-      newHeight = Math.round(factor*oldHeight);
+    if (divFactor.qH <= (factor)) {
+      newHeight = Math.round((1-factor)*oldHeight);
+      // we clicked up in the top, so move the source down
+      // because we'll be adding the new guy above
+      var sourcePosition = $(source).position();
+      var jugDownPixels = Math.round((factor)*oldHeight)
+      var newTopPixelsStr = Math.round(jugDownPixels +  sourcePosition.top)+"px";
+      //console.log("newTopPixelsStr="+newTopPixelsStr);
+      $(source).css({ top: newTopPixelsStr })
     }
   } else {
     console.log("WTF WTF WTF");
     newHeight = Math.round((0.5)*oldHeight);
   }
-  console.log("newHeight="+newHeight+" oldHeight"+oldHeight);
+  //console.log("newHeight="+newHeight+" oldHeight"+oldHeight);
   var newHeightStr = newHeight.toString()+"px";
 
   $(source).height(newHeight);
+  
   addToMeHorizontal(event, oldHeight, divFactor, factor);
 
-  
   //$(source).css("outline", "2px solid white");
 }
 
@@ -219,41 +225,44 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   //var divFactor = getDivisionFactor(source, event);
   //console.log("qH="+divFactor.qH);
   var sourcePosition = $(source).position();
-  // console.log($(source).position());
-  // console.log($(source).height());
+  console.log("source.position="+$(source).position());
+  console.log("source.height="+$(source).height());
   var sourceOldHeight = oldHeight;//Math.round(parseFloat($(source).css("height")));
   var sourceNewHeight = $(source).height();
-  var sourceBottom = $(source).position().top + $(source).offset().top + $(source).outerHeight(true);
+  //var sourceBottom = $(source).position().top + $(source).offset().top + $(source).outerHeight(true);
   //var top = parseInt(sourcePosition.top);
   
   var newElementHeight = Math.round((0.5)*sourceOldHeight);
-  var top =  Math.round(sourcePosition.top + 0.5*sourceOldHeight); // default divide in half
-  
+  var newElementTop =  Math.round(sourcePosition.top + 0.5*sourceOldHeight); // default divide in half
+  var oldElementTop;
+
   if (divFactor.qH <= factor || divFactor.qH > (1-factor)) {
     if (divFactor.qH > (1-factor)) {
       newElementHeight = Math.round((factor)*sourceOldHeight);
-      //console.log("Big Top");
-      //top = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
+      console.log("OLD TOP STAYS")
+      newElementTop = Math.round(sourcePosition.top + sourceNewHeight);
     } 
     if (divFactor.qH <= factor) {
-      newElementHeight = Math.round((1-factor)*sourceOldHeight);
+      newElementHeight = Math.round((factor)*sourceOldHeight);
+      console.log("OLD TOP ROLLS DOWN BY "+factor*sourceOldHeight)
+      newElementTop = sourcePosition.top - factor*sourceOldHeight;
       //console.log("Big Bottom");
       //top = Math.round(sourceBottom);//factor*sourceHeight)
     } 
   } else {
-    // console.log("NEITHER NEITHER NEITHER");
+    console.log("NEITHER NEITHER NEITHER");
     // console.log(divFactor.qH+" "+sourceNewHeight+" "+sourceOldHeight);
     newElementHeight = Math.round(0.5*sourceOldHeight);
   }
-  top = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
+  //newElementTop = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
 
   console.log(sourceOldHeight - sourceNewHeight);
 
-  console.log("sourceNewHeight="+sourceNewHeight+", sourceOldHeight="+sourceOldHeight+", newHeight="+newElementHeight+", new Element Top="+top+", sourceBottom="+sourceBottom);
+  console.log("sourceNewHeight="+sourceNewHeight+", sourceOldHeight="+sourceOldHeight+", newHeight="+newElementHeight+", new Element Top="+newElementTop);
   //console.log(source)
 
   var newElementHeightStr = newElementHeight.toString()+"px";
-  var topStr = top.toString()+"px";
+  var topStr = newElementTop.toString()+"px";
 
   var width = Math.round(parseFloat($(source).css("width")));
   var widthStr = (width).toString()+"px";
@@ -380,13 +389,6 @@ function getDivisionFactor(target, event, direction="horizontal") {
   return {qH: qH, qV: qV};
 }
 
-//Opt/Alt-Click folds Vertically Shit-Click folds Horizontally
-
-// document.querySelector('#app').innerHTML = `
-// `
-
-// $('#connect').append("<div style='' id=foo>Opt/Alt-Click folds Vertically Shit-Click folds Horizontally</div>");
-// $('#foo').append("<div id=top style='width: 90vw; height: 100vh;'></div>");
 var initSquareBlock = "800px";//getViewportSize()+"px";
 $('#bottomcontainer').css('width', initSquareBlock);
 $('#bottomcontainer').css('height', initSquareBlock);
@@ -419,14 +421,7 @@ mc.get('singletap').requireFailure('doubletap');
 // double vert
 mc.on("singletap press", function(ev) {
   document.getElementById("instructions").innerText = ''
-  // var rect = ev.target.getBoundingClientRect();
-  // console.log(ev.center.x +", "+ev.center.y);
-  // var x = ev.center.x - rect.left; //x position within the element.
-  // var y = ev.center.y - rect.top;  //y position within the element.
-  // console.log("From Left? : " + x + " ; From Top? : " + y + ".");
-  // console.log("Height "+rect.height);
-  // var qH = y / rect.height;
-  // console.log("qH="+qH);
+
 
    if(ev.type == 'singletap') {
      divideMeLeft(ev.target);
