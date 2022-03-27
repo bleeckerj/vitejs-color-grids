@@ -16,8 +16,9 @@ import theJson from './palettes/palettesJson.json'
 
 //console.log(uploadBlob);
 
+// top-level await shenanigans..
+//var ipfs = await Ipfs.create()
 
-var ipfs = await Ipfs.create()
 // const { cid } = await ipfs.add('Goodbye world');
 // console.log(ipfs);
 // console.log(cid);
