@@ -10,13 +10,24 @@ import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 import jscolor from "jscolor";
 import { fromString } from 'uint8arrays/from-string'
+//import { google } from 'googleapis'
+//import { create } from 'ipfs-http-client'
 
-import {uploadBlob} from "./scripts/ipfs";
+var ipfs = await Ipfs.create(); // a mystery..
+//console.log(ipfs);
+// const auth = new google.auth.GoogleAuth({
+//   keyfile: "keys.json", // the key file
+//   //url to spreadsheets API
+//   scopes: "https://www.googleapis.com/auth/spreadsheets",
+// });
 
-console.log(uploadBlob);
+// const authClientObject = await auth.getClient();
+// const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
+//console.log(googleSheetsInstance);
 
 
-var ipfs = await Ipfs.create()
+// const client = create()
+// console.log(client);
 // const { cid } = await ipfs.add('Goodbye world');
 // console.log(ipfs);
 // console.log(cid);
