@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 // https://vitejs.dev/config/
 export default defineConfig({
   optimizeDeps: {
-    exclude: ['*']
+    exclude: ['./scripts/jscolor.js']
   },
   build: {
     minify: 'esbuild',

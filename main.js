@@ -8,7 +8,7 @@ import chroma from "chroma-js";
 import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
-import jscolor from "jscolor";
+import "./scripts/jscolor.js";
 import { fromString } from 'uint8arrays/from-string'
 import theJson from './palettes/palettesJson.json'
 //import {uploadBlob} from "./scripts/ipfs";
@@ -23,7 +23,6 @@ import theJson from './palettes/palettesJson.json'
 // console.log(ipfs);
 // console.log(cid);
 // import spectrumColorpicker from 'spectrum-colorpicker2';
-
 var borderColor = "black";
 var borderWidth = 2;
 var outlineOffset = 2;
@@ -37,12 +36,12 @@ var blockBuild = new Array();
 // var scale = chroma.scale([`hsla(${Math.random() * 360}, 100%, 60%, 1)`,`hsla(${Math.random() * 360}, 40%, 90%, 1)`]).mode('hsl').colors(20);
 // console.log(scale);
 // /*
-// const provider = new ethers.providers.Web3Provider(
-//   window.ethereum,
-//   "any"
-// );
-// await provider.send("eth_requestAccounts", []);
-// const signer = provider.getSigner();
+const provider = new ethers.providers.Web3Provider(
+  window.ethereum,
+  "any"
+);
+await provider.send("eth_requestAccounts", []);
+const signer = provider.getSigner();
 
 // (async function () {
 //   let userAddress = await signer.getAddress();
