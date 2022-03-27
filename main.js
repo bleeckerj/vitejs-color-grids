@@ -8,12 +8,13 @@ import chroma from "chroma-js";
 import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
-import jscolor from "jscolor";
+//import jscolor from "jscolor";
 import { fromString } from 'uint8arrays/from-string'
 
-import {uploadBlob} from "./scripts/ipfs";
+//import {uploadBlob} from "./scripts/ipfs";
+import fetch from 'node-fetch'
 
-console.log(uploadBlob);
+//console.log(uploadBlob);
 
 
 var ipfs = await Ipfs.create()
