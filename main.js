@@ -1,4 +1,6 @@
 import './style.css'
+//import CID from "ipfs-http-client";
+
 import $, { event } from "jquery";
 import { ethers } from "ethers";
 import { randomColor } from "randomcolor";
@@ -7,6 +9,17 @@ import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 import jscolor from "jscolor";
+import { fromString } from 'uint8arrays/from-string'
+
+import {uploadBlob} from "./scripts/ipfs";
+
+console.log(uploadBlob);
+
+
+var ipfs = await Ipfs.create()
+// const { cid } = await ipfs.add('Goodbye world');
+// console.log(ipfs);
+// console.log(cid);
 // import spectrumColorpicker from 'spectrum-colorpicker2';
 
 var borderColor = "black";
@@ -14,6 +27,7 @@ var borderWidth = 2;
 var outlineOffset = 2;
 var clickCount = 0;
 var blockIndex = 0;
+var colorIndex = 0;
 var blockBuild = new Array();
 
 
@@ -61,7 +75,7 @@ function getLowestFraction(x0) {
   return h + "/" + k;
 }
 
-function recordBlockBuild(sourceDiv, siblingDiv, direction) {
+function recordBlockBuild(sourceDiv, siblingDiv, direction, orientation="BELOW") {
   if(sourceDiv != null) {
     var name_0 = sourceDiv.id;
     var width_0 = sourceDiv.clientWidth;
@@ -74,14 +88,14 @@ function recordBlockBuild(sourceDiv, siblingDiv, direction) {
     var height_1 = siblingDiv.clientHeight;
     var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
 
-    blockBuild.push([name_0, width_0, height_0, bgColor_0, name_1, width_1, height_1, bgColor_1, direction]);
+    blockBuild.push([name_0, width_0, height_0, bgColor_0, name_1, width_1, height_1, bgColor_1, direction, orientation]);
 } else {
     var name_1 = siblingDiv.id;
     var width_1 = siblingDiv.clientWidth;
     var height_1 = siblingDiv.clientHeight;
     var bgColor_1 = $("#"+siblingDiv.id).css("background-color");
 
-  blockBuild.push([null, null, null, null, name_1, width_1, height_1, bgColor_1, direction]);
+  blockBuild.push([null, null, null, null, name_1, width_1, height_1, bgColor_1, direction, orientation]);
   }
   // console.log(direction);
   // blockBuild.push([sourceDiv, siblingDiv, direction]);
@@ -106,12 +120,13 @@ function unfurlBlockBuild() {
     var ratio_1 = getLowestFraction(width_1/height_1);
     var bgColor_1 = element[7];
     var direction = element[8];
+    var orientation = element[9];
+
     text += stepNumber+". "
     if (direction != "PLACE") {
       if (direction == "HORIZONTAL") {
         text += "Divide the block referred to as '"+name_0+"' along the "+direction+" axis, making its width now "+width_0+" units and height now "+height_0+" units (a size ratio of "+ratio_0+").";
-        text += "\r\nAdd a new block below '"+name_0+"' with a width of "+width_1+" units and a height of "+height_1+" units (a size ratio of "+ratio_1+").";
-        
+        text += "\r\nAdd a new block "+orientation+" '"+name_0+"' with a width of "+width_1+" units and a height of "+height_1+" units (a size ratio of "+ratio_1+").";
         text += "\r\nRefer to this block as '"+name_1+"' and make its color correspond to an RGB value of "+bgColor_1;
       } else {
         text += "Divide the block referred to as '"+name_0+"' along the "+direction+" axis, making its width now "+width_1+" units and height now "+height_1+" units (a size ratio of "+ratio_1+").";
@@ -139,34 +154,40 @@ function unfurlBlockBuild() {
 }
 
 var colors;
-function computeColorsArray(start = '#fafa6e', end = '#2A4858') {
+function computeColorsArray(start = '#fafa6e', end = '#41D067') {
   //var scheme = new ColorScheme;
   //console.log(scheme);
   //scheme.from_hue((Math.random() * 360)).scheme('tetrade').variation('default');
   //var colors; = scheme.colors();
   //console.log(chroma.scale(['#fafa6e','#2A4858'])(0.5).hsl());
 //colors = chroma.scale(['#fafa6e', '#fafa6e']).mode('lch').colors(6); // start and finish
-  colors = chroma.scale([start, end]).colors(16)//colors = ['ff0000', '00ff00', '0000ff'];
+  var colorCount = parseInt($('#colorcount').val());
+  colors = chroma.scale([start, end]).colors(colorCount);//colors = ['ff0000', '00ff00', '0000ff'];
+  if (colorCount == 1) {
+    colors = [start];
+  }
   console.log(colors);
 }
 
 function randomHsl() {
   //var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
-  var index = blockIndex % colors.length
+  var index = colorIndex % colors.length
+  if(colors.length == 1) {
+    index = 0;
+  }
   var h = chroma(colors[index]).hsl();
+  console.log(colors[index]);
   console.log(h);
   var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
-
-  //var r = randomColor({luminosity: 'bright', format: 'hsla', alpha: 1.0 });
-  //console.log(r);
-  //console.log(r);
-  //return colors[blockIndex];
-  return c;
+  var x = chroma(colors[index]).rgb();
+  console.log(x)
+  
+  return `rgb(`+x[0]+`,`+x[1]+`,`+x[2]+`)`
 }
 
 function randomRGB() {
   var h = chroma(colors[0]);
-  console.log(h.hex());
+  //console.log(h.hex());
   return h;
 }
 
@@ -180,12 +201,19 @@ function getRandomColor() {
   return randomHsl();
 }
 
+function clearAndRestart() {
+  // clear the instruction array
+  // clear all the elements except block_0
+}
+
 function divideMeHorizontal(event, factor=0.25) {
   var source = event.target;
+  var orientation = "BELOW";
   var oldHeight = Math.round(parseFloat($(source).css("height")));
   if (oldHeight <= 10) {
     return;
   }
+  
   var divFactor = getDivisionFactor(source, event);
   console.log("qH="+divFactor.qH);
   
@@ -195,6 +223,7 @@ function divideMeHorizontal(event, factor=0.25) {
 
     if (divFactor.qH > (1-factor)) {
       newHeight = Math.round((1-factor)*oldHeight);
+      orientation = "BELOW";
     }
     if (divFactor.qH <= (factor)) {
       newHeight = Math.round((1-factor)*oldHeight);
@@ -205,19 +234,17 @@ function divideMeHorizontal(event, factor=0.25) {
       var newTopPixelsStr = Math.round(jugDownPixels +  sourcePosition.top)+"px";
       //console.log("newTopPixelsStr="+newTopPixelsStr);
       $(source).css({ top: newTopPixelsStr })
+      orientation = "ABOVE";
     }
   } else {
     console.log("WTF WTF WTF");
-    newHeight = Math.round((0.5)*oldHeight);
   }
-  //console.log("newHeight="+newHeight+" oldHeight"+oldHeight);
-  var newHeightStr = newHeight.toString()+"px";
 
   $(source).height(newHeight);
   
   addToMeHorizontal(event, oldHeight, divFactor, factor);
 
-  //$(source).css("outline", "2px solid white");
+  return orientation;
 }
 
 function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
@@ -246,21 +273,11 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
       newElementHeight = Math.round((factor)*sourceOldHeight);
       console.log("OLD TOP ROLLS DOWN BY "+factor*sourceOldHeight)
       newElementTop = sourcePosition.top - factor*sourceOldHeight;
-      //console.log("Big Bottom");
-      //top = Math.round(sourceBottom);//factor*sourceHeight)
     } 
   } else {
     console.log("NEITHER NEITHER NEITHER");
-    // console.log(divFactor.qH+" "+sourceNewHeight+" "+sourceOldHeight);
     newElementHeight = Math.round(0.5*sourceOldHeight);
   }
-  //newElementTop = Math.round(sourcePosition.top + sourceNewHeight);//(1-factor)*sourceHeight)
-
-  console.log(sourceOldHeight - sourceNewHeight);
-
-  console.log("sourceNewHeight="+sourceNewHeight+", sourceOldHeight="+sourceOldHeight+", newHeight="+newElementHeight+", new Element Top="+newElementTop);
-  //console.log(source)
-
   var newElementHeightStr = newElementHeight.toString()+"px";
   var topStr = newElementTop.toString()+"px";
 
@@ -269,7 +286,10 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
 
   var position = $(source).position();
   var left = Math.round(position.left);
+  
   blockIndex++;
+  colorIndex++;
+
   var bgColor = getRandomColor();
   
   var template = "<div id='block_"+blockIndex+ "' style=' position: absolute; left: "+left+"px; top: "+topStr+"; height: "+newElementHeightStr+"; width: "+widthStr+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+bgColor+"'></div>";
@@ -283,29 +303,34 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
   mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
+  mc.add( new Hammer.Press({ event: 'pressup', time: 1200 }));
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
-  mc.get('doubletap').recognizeWith('singletap');
+  //mc.get('doubletap').recognizeWith('singletap');
   // we only want to trigger a tap, when we don't have detected a doubletap
-  mc.get('singletap').requireFailure('doubletap');
+  //mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap doubletap press", function(ev) {
+  mc.on("singletap press pressup", function(ev) {
     document.getElementById("instructions").innerText = ''
-    console.log(ev.type);
+    //console.log(ev.type);
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
+      recordBlockBuild(document.querySelector("#"+ev.target.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL");
+
     }
     if(ev.type == 'press') {
-      //console.log(ev);
-      divideMeHorizontal(ev, 0.25);
-      
+      console.log("REGULAR PRESS");
+      var orientation = divideMeHorizontal(ev, 0.25);
+      recordBlockBuild(document.querySelector("#"+ev.target.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL", orientation);
 
     }
+    if(ev.type == 'pressup') {
+      console.log("SUPER PRESS!!!");
+      console.log(ev);
+    }
  });
- console.log(document.querySelector("#"+source.id).offsetHeight);
+ //console.log(document.querySelector("#"+source.id).offsetHeight);
 
- recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL");
-  // console.log(document.querySelector("#block_"+blockIndex));
 }
 
 function divideMeLeft(source) {
@@ -335,6 +360,7 @@ function addToMeLeft(source) {
   var newLeft = left+Math.round(sourceWidth/2);
   // console.log("new_left="+new_left+" width/2="+width/2);
   blockIndex++;
+  colorIndex++;
   // new template we're adding
   var template = "<div id='block_"+blockIndex+ "' style='position: absolute; left: "+newLeft+"px; top: "+top+"px; height: "+destHeight+"; width: "+destWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>";// $('#redbox').html();
 
@@ -363,11 +389,11 @@ function addToMeLeft(source) {
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
-      recordBlockBuild(document.querySelector("#"+source.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
-
+      recordBlockBuild(document.querySelector("#"+ev.target.id), document.querySelector("#block_"+blockIndex), "VERTICAL");
     }
     if(ev.type == 'press') {
-      divideMeHorizontal(ev);
+      var orientation = divideMeHorizontal(ev, 0.25);
+      recordBlockBuild("#"+ev.target.id, document.querySelector("#block_"+blockIndex), "HORIZONTAL", orientation);
       //addToMeHorizontal(ev);
     }
  });
@@ -388,6 +414,14 @@ function getDivisionFactor(target, event, direction="horizontal") {
   //console.log("qH="+qH+" qV="+qV+" "+targetRect);
   return {qH: qH, qV: qV};
 }
+
+
+
+
+//
+//
+//
+//
 
 var initSquareBlock = "800px";//getViewportSize()+"px";
 $('#bottomcontainer').css('width', initSquareBlock);
@@ -428,7 +462,10 @@ mc.on("singletap press", function(ev) {
      addToMeLeft(ev.target);
    }
    if(ev.type == 'press') {
-     divideMeHorizontal(ev, 0.25);
+    var orientation = divideMeHorizontal(ev, 0.25);
+    //console.log(ev.target.id+" "+blockIndex+" "+orientation);
+    recordBlockBuild(document.querySelector("#"+ev.target.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL", orientation);
+    // divideMeHorizontal(ev, 0.25);
      //addToMeHorizontal(ev);
      
    }
@@ -451,11 +488,65 @@ $('#button').on("click", function(e) {
 var node = document.getElementById('blocks');
 //console.log(node);
 var img;
+
+
+// domtoimage.toBlob(document.getElementById('blocks')).then(function (blob) {
+//   console.log(blob);
+//   let result = ipfs.add(blob).then(function (result) {
+//    console.log(result);
+  
+//   });
+// });
+
 domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
     .then(function (dataUrl) {
-        img = dataUrl;
-        //console.log(img);
+      var metaDataCID;
+      var imageCID;    
+      
+      img = dataUrl;
+          
+        // console.log(img);
+        // const foo =  uploadBlob(img).then(function (result) {
+        //   console.log(result);
+        // });
+        var justBase64Data = img.split("image/jpeg;base64,")[1]
+        const data = fromString(justBase64Data, 'base64');
+        //console.log(data);
+        var dom = document.getElementById('blocks').outerText;
+        console.log(dom);
+        const fileDetails = {
+          path: "lewittttttttt.jpg",
+          content: data
+        };
+        
+        const options = {
+          wrapWithDirectory : true
+        };
+        /* IPFS Upload Stuff Here
+        let result = ipfs.add(fileDetails, options).then(function (result) {
+          //ipfs.add(data).then(function (result) {
+          console.log(result.cid._baseCache.get('z'));
+          var addRecv = result;
+          var cid = result.cid._baseCache.get('z');
+          imageCID = cid;
+          var imageURL = "ipfs://"+cid+"/lewittttttttt.jpg";
 
+          console.log(addRecv);
+          var metaObj = {name : "LEWITTTTTTTTT", "image" : imageURL, "external_url": "lewittttttttt.xyz", description: "", "attributes": [{"instructions" : instrText, "dom" : dom, "image-base64-jpeg": justBase64Data}] }
+          var jsonObj = JSON.stringify(metaObj);
+          //console.log(jsonObj);
+          ipfs.add(
+            jsonObj,
+            ).then(function (result) {
+            console.log(result);
+            console.log(result.path);
+            metaDataCID = result.path;
+            document.getElementById('chips').innerText = "ipfs://"+metaDataCID+" ipfs://"+imageCID;
+
+          });
+        });
+        */
+//        console.log(result);
         const doc = new jsPDF({
           orientation: "portrait",
           unit: "in",
@@ -465,7 +556,7 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         doc.setFontSize(8);
         doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
         doc.text(instrText,0.1, 4.2);
-        doc.save("instructions.pdf");
+        //doc.save("instructions.pdf");
 
         var link = document.createElement('a');
         link.download = 'lewitt.jpeg';
@@ -478,19 +569,24 @@ $('#walletbutton').after("<button id=button class=button button1;>CONNECT WALLET
 $('#walletbutton').on("click", function(e) {})
 //$(function() {
  
+//
+// If the pickers change or the count change, update the color range
+//
   var picker_1 = new JSColor('#cp1');
   document.getElementById('cp1').jscolor.onChange = function() {
-    console.log(this.toHEXString());
     computeColorsArray(this.toHEXString(),document.getElementById('cp2').jscolor.toHEXString() );
     document.getElementById('block_0').style.backgroundColor = this.toHEXString();
   }
-  console.log(randomRGB());
   picker_1.fromString(colors[0]);
-  console.log(picker_1);
+
   var picker_2 = new JSColor('#cp2');
   //document.getElementById('cp2').jscolor.show();
   document.getElementById('cp2').jscolor.onChange = function() {
-    console.log(this.toHEXString());
+    computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(),this.toHEXString() );
+
   }
   picker_2.fromString(colors[colors.length-1]);
 
+  $(document).on('change','#colorcount' ,function(){
+    computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
+  });

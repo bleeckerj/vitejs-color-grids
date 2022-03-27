@@ -11,7 +11,7 @@
   </head>
   <body>
     <!-- <script type="module" src="/main.js"></script> -->
-    <div id="topcontainer" class="container" style="background-color : rgba(140,140,140)">
+    <div id="topcontainer" class="container">
       <div id="app">
         APP
       </div>
@@ -25,9 +25,9 @@
         <div class="row">
           <div class="col">
         <div class="container">
-          <div class="row" style="background-color: rgb(200,200,200);">
-            <div class="col" style="background-color: rgb(0,0,0);">
-            <div style="position: relative; top: 0px; left: -35px;" id="blocks">
+          <div class="row">
+            <div class="col">
+            <div style="position: relative; top: 0px; left: 0px;" id="blocks">
             </div>
             <!-- <div style="position: relative; top: -100px; right: -400px;" class="col">
               Hello
@@ -40,26 +40,43 @@
       </div>
       </div>
      
-    <div id="bottomcontainer" class="container" style="position: relative; top: 50px; left: 0px;background-color : rgba(158, 34, 34, 0)">
+    <div id="bottomcontainer" class="container" style="position: relative; top: 50px; left: 40px;background-color : rgba(158, 34, 34, 0)">
     <div class="row" style="margin-top: 1rem">
       <div class="col bg-primary">
         
       </div>
     </div>
-    <div class="row" style="margin-top: 1rem; background-color : rgb(240,240,240);">
+    <div class="row justify-content-center" style="margin-top: 1rem;">
       <div class="col" id="picker">
         <input id="cp1" />
-        <!-- COLOR PICKER 1 <input data-jscolor="{
-          onChange: 'update(this, \'#pr1\')',
-          onInput: 'update(this, \'#pr2\')',
-          alpha:0.7, value:'CCFFAA'}"/> -->
+      </div>
+      <div class="col text-center" style="font-size: 18px; color: white; background-color: rgb(200,150,200);">COLORS
+        <select name="range-count" id="colorcount">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option selected value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+        </select>
       </div>
       <div class="col">
-        COLOR PICKER 2 <input id="cp2" data-jscolor="{format: 'hex', onChange: 'wtf(this)'}"/>
+        <input id="cp2"/>
 
       </div>
     </div>
     <div class="row justify-content-center" style="margin-top: 2rem;">
+      <div id="chips" style="font-size: 9px;" class="col"></div>
       <div class="col">
         <div style="font-size: 9px; text-align: center;">CHIPS AHOO</div>
         </div>
@@ -102,7 +119,7 @@
     <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js"></script>
     <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
     <script src="scripts/jscolor.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js"></script>
     <!-- This is our example code -->
     <!-- <script type="text/javascript" src="./example.js"></script>
     <link rel="stylesheet" href="./style.css"/> -->
