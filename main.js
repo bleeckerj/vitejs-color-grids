@@ -638,3 +638,42 @@ $('#walletbutton').on("click", function(e) {})
   });
 
   $('#colorfrom_g').prop("checked", true).trigger("click");
+
+
+//   document.addEventListener("DOMContentLoaded", function() {
+//     console.log("HELLO????");
+//   var externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'scripts/jscolor.js');
+//   document.head.appendChild(externalScript);
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js');
+//   document.head.appendChild(externalScript);
+// console.log(document.head);
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://unpkg.com/web3modal@1.9.0/dist/index.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://unpkg.com/web3@1.2.11/dist/web3.min.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js');
+//   document.head.appendChild(externalScript);
+
+//   externalScript = document.createElement('script');
+//   externalScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js');
+//   document.head.appendChild(externalScript);
+//   });
