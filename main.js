@@ -514,16 +514,30 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         //console.log(data);
         var dom = document.getElementById('blocks').outerText;
         console.log(dom);
-        let result = ipfs.add(data).then(function (result) {
-          console.log(result);
+        const fileDetails = {
+          path: "lewittttttttt.jpg",
+          content: data
+        };
+        
+        const options = {
+          wrapWithDirectory : true
+        };
+        /* IPFS Upload Stuff Here
+        let result = ipfs.add(fileDetails, options).then(function (result) {
+          //ipfs.add(data).then(function (result) {
+          console.log(result.cid._baseCache.get('z'));
           var addRecv = result;
-          var cid = addRecv.path;
+          var cid = result.cid._baseCache.get('z');
           imageCID = cid;
+          var imageURL = "ipfs://"+cid+"/lewittttttttt.jpg";
 
-          var metaObj = {"$LEWITTTTTTTTT" : 0, "image-cid" : cid, "instructions" : instrText, "dom" : dom, "image-base64-jpeg": justBase64Data }
+          console.log(addRecv);
+          var metaObj = {name : "LEWITTTTTTTTT", "image" : imageURL, "external_url": "lewittttttttt.xyz", description: "", "attributes": [{"instructions" : instrText, "dom" : dom, "image-base64-jpeg": justBase64Data}] }
           var jsonObj = JSON.stringify(metaObj);
-
-          ipfs.add(jsonObj).then(function (result) {
+          //console.log(jsonObj);
+          ipfs.add(
+            jsonObj,
+            ).then(function (result) {
             console.log(result);
             console.log(result.path);
             metaDataCID = result.path;
@@ -531,6 +545,7 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
 
           });
         });
+        */
 //        console.log(result);
         const doc = new jsPDF({
           orientation: "portrait",
@@ -546,7 +561,7 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         var link = document.createElement('a');
         link.download = 'lewitt.jpeg';
         link.href = dataUrl;
-        //link.click();
+        link.click();
     });
 }); // button on click
 $('#walletbutton').after("<button id=button class=button button1;>CONNECT WALLET</button>");
