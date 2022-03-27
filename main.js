@@ -10,9 +10,9 @@ import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 //import jscolor from "jscolor";
 import { fromString } from 'uint8arrays/from-string'
-
+import theJson from './palettes/palettesJson.json'
 //import {uploadBlob} from "./scripts/ipfs";
-import fetch from 'node-fetch'
+//import fetch from 'node-fetch'
 
 //console.log(uploadBlob);
 
@@ -155,6 +155,12 @@ function unfurlBlockBuild() {
 }
 
 var colors;
+var colorPaletteIndex = Math.round(Math.random()*theJson.palettes.length-1);
+var rndColorsFromPalette = theJson.palettes[colorPaletteIndex].rgb.split('-').map(color => 
+  '#' + color
+);
+console.log(rndColorsFromPalette);
+
 function computeColorsArray(start = '#fafa6e', end = '#41D067') {
   //var scheme = new ColorScheme;
   //console.log(scheme);
@@ -173,6 +179,9 @@ function computeColorsArray(start = '#fafa6e', end = '#41D067') {
 function randomHsl() {
   //var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
   var index = colorIndex % colors.length
+
+  index = colorIndex % rndColorsFromPalette.length;
+
   if(colors.length == 1) {
     index = 0;
   }
@@ -181,9 +190,15 @@ function randomHsl() {
   console.log(h);
   var c = `hsla(`+h[0]+`,`+h[1]*100+`%,`+h[2]*100+`%,`+h[3]+`)`;
   var x = chroma(colors[index]).rgb();
-  console.log(x)
-  
   return `rgb(`+x[0]+`,`+x[1]+`,`+x[2]+`)`
+}
+
+function randomPaletteHexColor() {
+  var index = colorIndex % colors.length
+  index = colorIndex % rndColorsFromPalette.length;
+  var paletteHexColor = rndColorsFromPalette[index];
+  console.log(paletteHexColor);
+  return paletteHexColor;
 }
 
 function randomRGB() {
@@ -199,7 +214,18 @@ function getRandomColor() {
   // // console.log(c);
   // console.log(randomHsl());
   // return randomColor({ hue: 'light', format: 'hsla' });
-  return randomHsl();
+  //return randomHsl();
+  console.log($('#colorfrom_g').val());
+  console.log($("input[name=colorfrom]:checked").val());
+  var whichType = $("input[name=colorfrom]:checked").val();
+
+  if (whichType == 'palette') {
+    return randomPaletteHexColor();
+  } else {
+    return randomHsl();
+  }
+
+  //return randomPaletteHexColor();
 }
 
 function clearAndRestart() {
@@ -479,7 +505,7 @@ mc.on("singletap press", function(ev) {
 $('#top').append("Hello");
 recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
-$('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>DOUBLE TAP/CLICK OR LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
+$('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
 $('#instructionbutton').after("<button id=button class=button>DONE</button>");
@@ -591,3 +617,23 @@ $('#walletbutton').on("click", function(e) {})
   $(document).on('change','#colorcount' ,function(){
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
   });
+
+  $('#colorfrom_g').on('click', function() {
+    document.getElementById('cp2').hidden = false;
+    document.getElementById('cp1').hidden = false;
+    document.getElementById('colorcount').hidden = false;
+    computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
+    document.getElementById('block_0').style.backgroundColor = document.getElementById('cp1').jscolor.toHEXString();
+
+
+  });
+
+  $('#colorfrom_p').on('click', function() {
+    document.getElementById('cp2').hidden = true;
+    document.getElementById('cp1').hidden = true;
+    document.getElementById('colorcount').hidden = true;
+    document.getElementById('block_0').style.backgroundColor = getRandomColor();
+
+  });
+
+  $('#colorfrom_g').prop("checked", true).trigger("click");
