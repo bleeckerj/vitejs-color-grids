@@ -8,7 +8,7 @@ import chroma from "chroma-js";
 import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
-//import jscolor from "jscolor";
+import jscolor from "jscolor";
 import { fromString } from 'uint8arrays/from-string'
 import theJson from './palettes/palettesJson.json'
 //import {uploadBlob} from "./scripts/ipfs";
