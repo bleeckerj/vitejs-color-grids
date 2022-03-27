@@ -1,4 +1,6 @@
 import './style.css'
+//import CID from "ipfs-http-client";
+
 import $, { event } from "jquery";
 import { ethers } from "ethers";
 import { randomColor } from "randomcolor";
@@ -7,6 +9,17 @@ import domtoimage from 'dom-to-image';
 import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 import jscolor from "jscolor";
+import { fromString } from 'uint8arrays/from-string'
+
+import {uploadBlob} from "./scripts/ipfs";
+
+console.log(uploadBlob);
+
+
+var ipfs = await Ipfs.create()
+// const { cid } = await ipfs.add('Goodbye world');
+// console.log(ipfs);
+// console.log(cid);
 // import spectrumColorpicker from 'spectrum-colorpicker2';
 
 var borderColor = "black";
@@ -475,11 +488,50 @@ $('#button').on("click", function(e) {
 var node = document.getElementById('blocks');
 //console.log(node);
 var img;
+
+
+// domtoimage.toBlob(document.getElementById('blocks')).then(function (blob) {
+//   console.log(blob);
+//   let result = ipfs.add(blob).then(function (result) {
+//    console.log(result);
+  
+//   });
+// });
+
 domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
     .then(function (dataUrl) {
-        img = dataUrl;
-        //console.log(img);
+      var metaDataCID;
+      var imageCID;    
+      
+      img = dataUrl;
+          
+        // console.log(img);
+        // const foo =  uploadBlob(img).then(function (result) {
+        //   console.log(result);
+        // });
+        var justBase64Data = img.split("image/jpeg;base64,")[1]
+        const data = fromString(justBase64Data, 'base64');
+        //console.log(data);
+        var dom = document.getElementById('blocks').outerText;
+        console.log(dom);
+        let result = ipfs.add(data).then(function (result) {
+          console.log(result);
+          var addRecv = result;
+          var cid = addRecv.path;
+          imageCID = cid;
 
+          var metaObj = {"$LEWITTTTTTTTT" : 0, "image-cid" : cid, "instructions" : instrText, "dom" : dom, "image-base64-jpeg": justBase64Data }
+          var jsonObj = JSON.stringify(metaObj);
+
+          ipfs.add(jsonObj).then(function (result) {
+            console.log(result);
+            console.log(result.path);
+            metaDataCID = result.path;
+            document.getElementById('chips').innerText = "ipfs://"+metaDataCID+" ipfs://"+imageCID;
+
+          });
+        });
+//        console.log(result);
         const doc = new jsPDF({
           orientation: "portrait",
           unit: "in",
@@ -489,12 +541,12 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         doc.setFontSize(8);
         doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
         doc.text(instrText,0.1, 4.2);
-        doc.save("instructions.pdf");
+        //doc.save("instructions.pdf");
 
         var link = document.createElement('a');
         link.download = 'lewitt.jpeg';
         link.href = dataUrl;
-        link.click();
+        //link.click();
     });
 }); // button on click
 $('#walletbutton').after("<button id=button class=button button1;>CONNECT WALLET</button>");
