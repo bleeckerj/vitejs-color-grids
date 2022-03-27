@@ -201,11 +201,6 @@ function randomPaletteHexColor() {
   return paletteHexColor;
 }
 
-function randomRGB() {
-  var h = chroma(colors[0]);
-  //console.log(h.hex());
-  return h;
-}
 
 function getRandomColor() {
   // let rgb =  randomColor({ luminosity: 'light', format: 'hsla' });
@@ -231,6 +226,19 @@ function getRandomColor() {
 function clearAndRestart() {
   // clear the instruction array
   // clear all the elements except block_0
+  // remove everything under block_0
+  var parent = document.querySelector('#block_0');
+  parent.style.height = initSquareBlock;
+  parent.style.width = initSquareBlock;
+  parent.style.top = top;
+  parent.style.left = left;
+  console.log(parent);
+  while (parent.nextSibling) {
+    parent.nextSibling.remove();
+  }
+  
+  //$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+
 }
 
 function divideMeHorizontal(event, factor=0.25) {
@@ -508,8 +516,8 @@ recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 $('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
-$('#instructionbutton').after("<button id=button class=button>DONE</button>");
-$('#button').on("click", function(e) {
+$('#instructionbutton').after("<button id=donebutton class=button>DONE</button>");
+$('#donebutton').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
 var node = document.getElementById('blocks');
@@ -591,9 +599,18 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         link.click();
     });
 }); // button on click
-$('#walletbutton').after("<button id=button class=button button1;>CONNECT WALLET</button>");
 
-$('#walletbutton').on("click", function(e) {})
+$('#walletbutton').after("<button id=wallet class=button button1;>CONNECT WALLET</button>");
+
+$('#wallet').on("click", function(e) {
+  alert("Wallet");
+});
+
+$('#clearbutton').after("<button id=clear class=button button1;>CLEAR TOAST</button>");
+$('#clear').on("click", function(e) {
+  clearAndRestart();
+  alert("HELLO?");
+});
 //$(function() {
  
 //
@@ -624,7 +641,7 @@ $('#walletbutton').on("click", function(e) {})
     document.getElementById('colorcount').hidden = false;
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
     document.getElementById('block_0').style.backgroundColor = document.getElementById('cp1').jscolor.toHEXString();
-
+    clearAndRestart();
 
   });
 
@@ -633,6 +650,7 @@ $('#walletbutton').on("click", function(e) {})
     document.getElementById('cp1').hidden = true;
     document.getElementById('colorcount').hidden = true;
     document.getElementById('block_0').style.backgroundColor = getRandomColor();
+    clearAndRestart();
 
   });
 
