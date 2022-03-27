@@ -180,7 +180,7 @@ function randomHsl() {
   //var r = `hsla(${Math.random() * 360}, 100%, 60%, 1)`;
   var index = colorIndex % colors.length
 
-  index = colorIndex % rndColorsFromPalette.length;
+  //index = colorIndex % rndColorsFromPalette.length;
 
   if(colors.length == 1) {
     index = 0;
