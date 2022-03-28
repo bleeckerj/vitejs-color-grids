@@ -153,13 +153,16 @@ function unfurlBlockBuild() {
 
   return text;
 }
-
 var colors;
-var colorPaletteIndex = Math.round(Math.random()*theJson.palettes.length-1);
-var rndColorsFromPalette = theJson.palettes[colorPaletteIndex].rgb.split('-').map(color => 
+var colorsFromCuratedPalette;
+initRandomCuratedColorPalette();
+function initRandomCuratedColorPalette() {
+  var colorPaletteIndex = Math.round(Math.random()*theJson.palettes.length-1);
+  colorsFromCuratedPalette = theJson.palettes[colorPaletteIndex].rgb.split('-').map(color => 
   '#' + color
-);
-console.log(rndColorsFromPalette);
+  );
+  console.log(colorsFromCuratedPalette);
+}
 
 function computeColorsArray(start = '#fafa6e', end = '#41D067') {
   //var scheme = new ColorScheme;
@@ -195,8 +198,8 @@ function randomHsl() {
 
 function randomPaletteHexColor() {
   var index = colorIndex % colors.length
-  index = colorIndex % rndColorsFromPalette.length;
-  var paletteHexColor = rndColorsFromPalette[index];
+  index = colorIndex % colorsFromCuratedPalette.length;
+  var paletteHexColor = colorsFromCuratedPalette[index];
   console.log(paletteHexColor);
   return paletteHexColor;
 }
@@ -236,9 +239,21 @@ function clearAndRestart() {
   while (parent.nextSibling) {
     parent.nextSibling.remove();
   }
-  
-  //$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+  initRandomCuratedColorPalette()
+  //$('#flavors').after("MAKE TOASTER PASTRIES");
 
+  //$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+}
+
+function clear() {
+  var parent = document.querySelector('#block_0');
+  parent.style.height = initSquareBlock;
+  parent.style.width = initSquareBlock;
+  parent.style.top = top;
+  parent.style.left = left;
+  while (parent.nextSibling) {
+    parent.nextSibling.remove();
+  }
 }
 
 function divideMeHorizontal(event, factor=0.25) {
@@ -606,13 +621,45 @@ $('#wallet').on("click", function(e) {
   alert("Wallet");
 });
 
-$('#clearbutton').after("<button id=clear class=button button1;>CLEAR TOAST</button>");
+$('#clearbutton').after("<button id=fruitflavor class=button1 button;>FRUIT FLAVOR</button> <button id=clear class=button1 button;>NEW PASTRY</button>");
 $('#clear').on("click", function(e) {
   clearAndRestart();
-  alert("HELLO?");
 });
-//$(function() {
- 
+
+$('#fruitflavor').on("click", function(e) {
+  resetFruitFlavorsPalette();
+  //   initRandomCuratedColorPalette();
+  //   clear();
+  //   document.getElementById('block_0').style.backgroundColor = getRandomColor();
+  //   $('#flavors').empty();
+  //   while ($('#flavors').firstChild) {
+  //     $('#flavors').removeChild($('#flavors').firstChild);
+  // }
+  //   var palette = colorsFromCuratedPalette
+    
+  //   // console.log(palette);
+  //   palette.forEach((element) => {
+  //     $('#flavors').append('<div style="float : left; width: 30px; height: 20px; background-color : '+ element+';"></div>');
+  //   })
+    
+  });
+
+  function resetFruitFlavorsPalette() {
+    colorIndex = 0;
+    initRandomCuratedColorPalette();
+    clear();
+    document.getElementById('block_0').style.backgroundColor = getRandomColor();
+    $('#flavors').empty();
+    while ($('#flavors').firstChild) {
+      $('#flavors').removeChild($('#flavors').firstChild);
+  }
+    var palette = colorsFromCuratedPalette
+    
+    // console.log(palette);
+    palette.forEach((element) => {
+      $('#flavors').append('<div style="float : left; width: 30px; height: 20px; background-color : '+ element+';"></div>');
+    })
+  }
 //
 // If the pickers change or the count change, update the color range
 //
@@ -639,9 +686,12 @@ $('#clear').on("click", function(e) {
     document.getElementById('cp2').hidden = false;
     document.getElementById('cp1').hidden = false;
     document.getElementById('colorcount').hidden = false;
+    document.getElementById('qc').hidden = false;
+
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
     document.getElementById('block_0').style.backgroundColor = document.getElementById('cp1').jscolor.toHEXString();
     clearAndRestart();
+    document.getElementById('fruitflavor').hidden = true;
 
   });
 
@@ -649,9 +699,11 @@ $('#clear').on("click", function(e) {
     document.getElementById('cp2').hidden = true;
     document.getElementById('cp1').hidden = true;
     document.getElementById('colorcount').hidden = true;
-    document.getElementById('block_0').style.backgroundColor = getRandomColor();
-    clearAndRestart();
+    document.getElementById('qc').hidden = true;
 
+    document.getElementById('block_0').style.backgroundColor = getRandomColor();
+    document.getElementById('fruitflavor').hidden = false;
+    resetFruitFlavorsPalette();
   });
 
   $('#colorfrom_g').prop("checked", true).trigger("click");
