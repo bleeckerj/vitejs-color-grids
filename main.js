@@ -231,12 +231,13 @@ function clearAndRestart() {
   // clear all the elements except block_0
   // remove everything under block_0
   blockBuild = new Array();
-  document.getElementById("instructions").innerText = ''
+  document.getElementById("instructions").innerText = '' 
   var parent = document.querySelector('#block_0');
   parent.style.height = initSquareBlock;
   parent.style.width = initSquareBlock;
   parent.style.top = top;
   parent.style.left = left;
+  recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
   console.log(parent);
   while (parent.nextSibling) {
     parent.nextSibling.remove();

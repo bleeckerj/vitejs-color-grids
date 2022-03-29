@@ -60,7 +60,7 @@ function delay(time) {
 
     //console.log("DATA: "+JSON.stringify(obj));
 
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 40; i++) {
     await page.keyboard.type(' ');
     //console.log(page.url());
     urlPart = page.url().split('/');
