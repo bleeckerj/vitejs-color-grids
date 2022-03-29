@@ -36,12 +36,12 @@ var blockBuild = new Array();
 // var scale = chroma.scale([`hsla(${Math.random() * 360}, 100%, 60%, 1)`,`hsla(${Math.random() * 360}, 40%, 90%, 1)`]).mode('hsl').colors(20);
 // console.log(scale);
 // /*
-const provider = new ethers.providers.Web3Provider(
-  window.ethereum,
-  "any"
-);
-await provider.send("eth_requestAccounts", []);
-const signer = provider.getSigner();
+// const provider = new ethers.providers.Web3Provider(
+//   window.ethereum,
+//   "any"
+// );
+// await provider.send("eth_requestAccounts", []);
+// const signer = provider.getSigner();
 
 // (async function () {
 //   let userAddress = await signer.getAddress();
@@ -50,7 +50,7 @@ const signer = provider.getSigner();
     
 // })();
 computeColorsArray();
-console.log(colors)
+//console.log(colors)
 
 
 function getLowestFraction(x0) {
@@ -213,8 +213,8 @@ function getRandomColor() {
   // console.log(randomHsl());
   // return randomColor({ hue: 'light', format: 'hsla' });
   //return randomHsl();
-  console.log($('#colorfrom_g').val());
-  console.log($("input[name=colorfrom]:checked").val());
+  // console.log($('#colorfrom_g').val());
+  // console.log($("input[name=colorfrom]:checked").val());
   var whichType = $("input[name=colorfrom]:checked").val();
 
   if (whichType == 'palette') {
@@ -230,6 +230,8 @@ function clearAndRestart() {
   // clear the instruction array
   // clear all the elements except block_0
   // remove everything under block_0
+  blockBuild = new Array();
+  document.getElementById("instructions").innerText = ''
   var parent = document.querySelector('#block_0');
   parent.style.height = initSquareBlock;
   parent.style.width = initSquareBlock;
@@ -240,9 +242,6 @@ function clearAndRestart() {
     parent.nextSibling.remove();
   }
   initRandomCuratedColorPalette()
-  //$('#flavors').after("MAKE TOASTER PASTRIES");
-
-  //$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 }
 
 function clear() {
@@ -302,8 +301,8 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   //var divFactor = getDivisionFactor(source, event);
   //console.log("qH="+divFactor.qH);
   var sourcePosition = $(source).position();
-  console.log("source.position="+$(source).position());
-  console.log("source.height="+$(source).height());
+  // console.log("source.position="+$(source).position());
+  // console.log("source.height="+$(source).height());
   var sourceOldHeight = oldHeight;//Math.round(parseFloat($(source).css("height")));
   var sourceNewHeight = $(source).height();
   //var sourceBottom = $(source).position().top + $(source).offset().top + $(source).outerHeight(true);
@@ -349,19 +348,26 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
 
 // We create a manager object, which is the same as Hammer(), but without the presetted recognizers. 
   var mc = new Hammer.Manager(myElement);
-  mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
+  // mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
   mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
   mc.add( new Hammer.Press({ event: 'pressup', time: 1200 }));
+  mc.add( new Hammer.Swipe({ event: 'swipe' }));
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
   //mc.get('doubletap').recognizeWith('singletap');
   // we only want to trigger a tap, when we don't have detected a doubletap
   //mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap press pressup", function(ev) {
+  mc.on("singletap press pressup swipe", function(ev) {
     document.getElementById("instructions").innerText = ''
     //console.log(ev.type);
+    if(ev.type == 'swipe') {
+      //console.log('swipe');
+      colorIndex++;
+      document.querySelector("#"+ev.target.id).style.backgroundColor = getRandomColor();
+    }
+
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
@@ -425,17 +431,21 @@ function addToMeLeft(source) {
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
   mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
-
+  mc.add( new Hammer.Swipe({ event: 'swipe' }))
 
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
-  mc.get('doubletap').recognizeWith('singletap');
-  // we only want to trigger a tap, when we don't have detected a doubletap
-  mc.get('singletap').requireFailure('doubletap');
+  // mc.get('doubletap').recognizeWith('singletap');
+  // // we only want to trigger a tap, when we don't have detected a doubletap
+  // mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap doubletap press", function(ev) {
+  mc.on("singletap press swipe", function(ev) {
     document.getElementById("instructions").innerText = ''
     // console.log(ev.type);
     // console.log(ev.target);
+    if(ev.type == 'swipe') {
+      colorIndex++;
+      document.querySelector("#"+ev.target.id).style.backgroundColor = getRandomColor();
+    }
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
@@ -482,56 +492,49 @@ $('#blocks').css('width', initSquareBlock);
 $('#blocks').css('height', initSquareBlock);
 var top = 0;//$('#blocks').offset().top;
 var left = 0;//$('#blocks').offset().left;
-//console.log(top+", "+left);
-// console.log(getViewportSize());
-// console.log($('#bottomcontainer').css("width"));
-// console.log(document.getElementById('bottomcontainer').getBoundingClientRect());
+
 $('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
 // We create a manager object, which is the same as Hammer(), but without the presetted recognizers. 
 var mc = new Hammer.Manager(myElement);
-mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
+// mc.add( new Hammer.Tap({ event: 'doubletap', taps: 2 }) );
 // Single tap recognizer
 mc.add( new Hammer.Tap({ event: 'singletap' }) );
 mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
-
+mc.add( new Hammer.Swipe({ event: 'swipe' }))
 // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
-mc.get('doubletap').recognizeWith('singletap');
+// mc.get('doubletap').recognizeWith('singletap');
 // we only want to trigger a tap, when we don't have detected a doubletap
-mc.get('singletap').requireFailure('doubletap');
+// mc.get('singletap').requireFailure('doubletap');
 // single to the left
 // double vert
-mc.on("singletap press", function(ev) {
+mc.on("singletap press swipe", function(ev) {
   document.getElementById("instructions").innerText = ''
 
-
+   if(ev.type == 'swipe') {
+     //console.log('swipe');
+     colorIndex++;
+     document.getElementById('block_0').style.backgroundColor = getRandomColor();
+   }
    if(ev.type == 'singletap') {
      divideMeLeft(ev.target);
      addToMeLeft(ev.target);
    }
    if(ev.type == 'press') {
     var orientation = divideMeHorizontal(ev, 0.25);
-    //console.log(ev.target.id+" "+blockIndex+" "+orientation);
     recordBlockBuild(document.querySelector("#"+ev.target.id), document.querySelector("#block_"+blockIndex), "HORIZONTAL", orientation);
-    // divideMeHorizontal(ev, 0.25);
-     //addToMeHorizontal(ev);
-     
    }
 });
-// long-press comes from https://github.com/john-doherty/long-press-event
-// $('#block_0').on('long-press', function(e) {
-//   divideMeLeft(this);
-//   addToMeLeft(this);
-// })
+
 $('#top').append("Hello");
 recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 
 $('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
-$('#instructionbutton').after("<button id=donebutton class=button>DONE</button>");
+$('#instructionbutton').after("<button id='donebutton' class='button1 button;'>DONE</button>");
 $('#donebutton').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
@@ -606,22 +609,22 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         doc.setFontSize(8);
         doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
         doc.text(instrText,0.1, 4.2);
-        //doc.save("instructions.pdf");
+        doc.save("instructions.pdf");
 
         var link = document.createElement('a');
-        link.download = 'lewitt.jpeg';
+        link.download = 'LeWittttttttt.jpeg';
         link.href = dataUrl;
         link.click();
     });
 }); // button on click
 
-$('#walletbutton').after("<button id=wallet class=button button1;>CONNECT WALLET</button>");
+$('#walletbutton').after("<button id='wallet' class='button1 button;'>WALLET</button>");
 
 $('#wallet').on("click", function(e) {
   alert("Wallet");
 });
 
-$('#clearbutton').after("<button id=fruitflavor class=button1 button;>FRUIT FLAVOR</button> <button id=clear class=button1 button;>NEW PASTRY</button>");
+$('#clearbutton').after("<button id='fruitflavor' class='button1 button;'>FRUIT FLAVOR</button> <button id='clear' class='button1 button;'>NEW PASTRY</button>");
 $('#clear').on("click", function(e) {
   clearAndRestart();
 });
