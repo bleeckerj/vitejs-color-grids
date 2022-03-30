@@ -10,7 +10,7 @@ import ColorScheme from 'color-scheme';
 import { jsPDF } from "jspdf";
 import "./scripts/jscolor.js";
 import { fromString } from 'uint8arrays/from-string'
-import theJson from './palettes/palettesJson.json'
+import thePalettesJson from './palettes/palettesJson.json'
 //import {uploadBlob} from "./scripts/ipfs";
 //import fetch from 'node-fetch'
 
@@ -157,8 +157,8 @@ var colors;
 var colorsFromCuratedPalette;
 initRandomCuratedColorPalette();
 function initRandomCuratedColorPalette() {
-  var colorPaletteIndex = Math.round(Math.random()*theJson.palettes.length-1);
-  colorsFromCuratedPalette = theJson.palettes[colorPaletteIndex].rgb.split('-').map(color => 
+  var colorPaletteIndex = Math.round(Math.random()*thePalettesJson.palettes.length-1);
+  colorsFromCuratedPalette = thePalettesJson.palettes[colorPaletteIndex].rgb.split('-').map(color => 
   '#' + color
   );
   console.log(colorsFromCuratedPalette);
@@ -202,6 +202,24 @@ function randomPaletteHexColor() {
   var paletteHexColor = colorsFromCuratedPalette[index];
   console.log(paletteHexColor);
   return paletteHexColor;
+}
+
+function getGradientPalettes() {
+  colorsFromCuratedPalette = getObjects(thePalettesJson, 'method', 'gradients');
+  console.log(colorsFromCuratedPalette);
+}
+
+function getObjects(obj, key, val) {
+  var objects = [];
+  for (var i in obj) {
+      if (!obj.hasOwnProperty(i)) continue;
+      if (typeof obj[i] == 'object') {
+          objects = objects.concat(getObjects(obj[i], key, val));
+      } else if (i == key && obj[key] == val) {
+          objects.push(obj);
+      }
+  }
+  return objects;
 }
 
 
@@ -353,22 +371,57 @@ function addToMeHorizontal(event, oldHeight, divFactor, factor=0.25) {
   // Single tap recognizer
   mc.add( new Hammer.Tap({ event: 'singletap' }) );
   mc.add( new Hammer.Press({ event: 'press', time: 800 }) );
-  mc.add( new Hammer.Press({ event: 'pressup', time: 1200 }));
-  mc.add( new Hammer.Swipe({ event: 'swipe' }));
+  //mc.add( new Hammer.Press({ event: 'pressup', time: 1200 }));
+  mc.add(new Hammer.Swipe({ event: 'swipe' })).set({ direction: Hammer.DIRECTION_ALL });
+  //mc.get('swipe').set({ direction: Hammer.DIRECTION_ALL });
+
+  // mc.on("swipeleft", function () { 
+  //   alert('swipeleft');
+  // }); 
+      
+  //      mc.on("swiperight", function () { 
+  //   alert('swiperight');
+  // });
+  
+  // mc.on("swipeup", function () { 
+  //   alert('swipeup');
+  // }); 
+  
+  // mc.on("swipedown", function () { 
+  //   alert('swipedown');
+  // });
+  // Hammer(myElement).on("swiperight", function() {
+  //   console.log("swiperight");
+  // });
+  // Hammer(myElement).on("swipeleft", function() {
+  //   console.log("swipeleft");
+  // });
+  // Hammer(myElement).on("swipeup", function() {
+  //   console.log("dragleft");
+  // });
+  // Hammer(myElement).on("swipedown", function() {
+  //   console.log("dragright");
+  // }); 
   // we want to recognize this simulatenous, so a quadrupletap will be detected even while a tap has been recognized.
   //mc.get('doubletap').recognizeWith('singletap');
   // we only want to trigger a tap, when we don't have detected a doubletap
   //mc.get('singletap').requireFailure('doubletap');
-
-  mc.on("singletap press pressup swipe", function(ev) {
+  mc.on("singletap press pressup swipeleft swiperight swipeup swipedown", function(ev) {
     document.getElementById("instructions").innerText = ''
-    //console.log(ev.type);
-    if(ev.type == 'swipe') {
-      //console.log('swipe');
+    console.log(ev.type);
+    if(ev.type == 'swipeleft') {
       colorIndex++;
       document.querySelector("#"+ev.target.id).style.backgroundColor = getRandomColor();
     }
-
+    if(ev.type == 'swiperight') {
+      console.log('swiperight');
+    }
+    if(ev.type == 'swipeup') {
+      console.log('swipeup');
+    }
+    if(ev.type == 'swipedown') {
+      console.log('swipedown');
+    }
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
       addToMeLeft(ev.target);
@@ -439,13 +492,22 @@ function addToMeLeft(source) {
   // // we only want to trigger a tap, when we don't have detected a doubletap
   // mc.get('singletap').requireFailure('doubletap');
 
-  mc.on("singletap press swipe", function(ev) {
+  mc.on("singletap press swipeleft swiperight swipeup swipedown", function(ev) {
     document.getElementById("instructions").innerText = ''
     // console.log(ev.type);
     // console.log(ev.target);
-    if(ev.type == 'swipe') {
+    if(ev.type == 'swipeleft') {
       colorIndex++;
       document.querySelector("#"+ev.target.id).style.backgroundColor = getRandomColor();
+    }
+    if(ev.type == 'swiperight') {
+      console.log('swiperight');
+    }
+    if(ev.type == 'swipeup') {
+      console.log('swipeup');
+    }
+    if(ev.type == 'swipedown') {
+      console.log('swipedown');
     }
     if(ev.type == 'singletap') {
       divideMeLeft(ev.target);
@@ -511,14 +573,22 @@ mc.add( new Hammer.Swipe({ event: 'swipe' }))
 // mc.get('singletap').requireFailure('doubletap');
 // single to the left
 // double vert
-mc.on("singletap press swipe", function(ev) {
+mc.on("singletap press swipeleft swiperight swipeup swipedown", function(ev) {
   document.getElementById("instructions").innerText = ''
-
-   if(ev.type == 'swipe') {
-     //console.log('swipe');
-     colorIndex++;
-     document.getElementById('block_0').style.backgroundColor = getRandomColor();
-   }
+  if(ev.type == 'swipeleft') {
+    colorIndex++;
+    document.getElementById('block_0').style.backgroundColor = getRandomColor();
+  }
+  if(ev.type == 'swiperight') {
+    console.log('swiperight');
+  }
+  if(ev.type == 'swipeup') {
+    console.log('swipeup');
+  }
+  if(ev.type == 'swipedown') {
+    console.log('swipedown');
+  }
+   
    if(ev.type == 'singletap') {
      divideMeLeft(ev.target);
      addToMeLeft(ev.target);
@@ -621,8 +691,22 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
 
 $('#walletbutton').after("<button id='wallet' class='button1 button;'>WALLET</button>");
 
-$('#wallet').on("click", function(e) {
+$('#wallet').on("click", async function(e) {
   alert("Wallet");
+  // /*
+  const provider = new ethers.providers.Web3Provider(
+    window.ethereum,
+    "any"
+  );
+  await provider.send("eth_requestAccounts", []);
+  const signer = provider.getSigner();
+
+  (async function () {
+    let userAddress = await signer.getAddress();
+    document.getElementById("wallet").innerText =
+      "Your wallet is " + userAddress;
+      
+  })();
 });
 
 $('#clearbutton').after("<button id='fruitflavor' class='button1 button;'>FRUIT FLAVOR</button> <button id='clear' class='button1 button;'>NEW PASTRY</button>");
@@ -687,26 +771,30 @@ $('#fruitflavor').on("click", function(e) {
   });
 
   $('#colorfrom_g').on('click', function() {
-    document.getElementById('cp2').hidden = false;
-    document.getElementById('cp1').hidden = false;
-    document.getElementById('colorcount').hidden = false;
-    document.getElementById('qc').hidden = false;
+    document.getElementById('cp2').disabled = false;
+    document.getElementById('cp1').disabled = false;
+    document.getElementById('colorcount').disabled = false;
+    document.getElementById('qc').disabled = false;
 
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
     document.getElementById('block_0').style.backgroundColor = document.getElementById('cp1').jscolor.toHEXString();
     clearAndRestart();
-    document.getElementById('fruitflavor').hidden = true;
+    document.getElementById('fruitflavor').disabled = true;
+    //document.getElementById('clear').disabled = true;
+
 
   });
 
   $('#colorfrom_p').on('click', function() {
-    document.getElementById('cp2').hidden = true;
-    document.getElementById('cp1').hidden = true;
-    document.getElementById('colorcount').hidden = true;
-    document.getElementById('qc').hidden = true;
+    document.getElementById('cp2').disabled = true;// hidden = true;
+    document.getElementById('cp1').disabled = true;
+    document.getElementById('colorcount').disabled = true;
+    document.getElementById('qc').disabled = true;
 
     document.getElementById('block_0').style.backgroundColor = getRandomColor();
-    document.getElementById('fruitflavor').hidden = false;
+    document.getElementById('fruitflavor').disabled = false;
+    //document.getElementById('clear').disabled = false;
+
     resetFruitFlavorsPalette();
   });
 

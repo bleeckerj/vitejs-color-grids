@@ -60,7 +60,7 @@ function delay(time) {
 
     //console.log("DATA: "+JSON.stringify(obj));
 
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 100; i++) {
     await page.keyboard.type(' ');
     //console.log(page.url());
     urlPart = page.url().split('/');
@@ -68,7 +68,7 @@ function delay(time) {
     var rgbStr = urlPart[3];
     var count = (rgbStr.match(new RegExp("-", "g")) || []).length
 
-    obj.palettes.push({c: count+1, method: "default", rgb: urlPart[3]});
+    obj.palettes.push({c: count+1, method: "gradients", rgb: urlPart[3]});
 
     //await page.screenshot({ path: 'palettes/colors_'+urlPart[3]+'.png'}); 
     //page.waitForSelector('.generator_coolors');
