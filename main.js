@@ -172,7 +172,7 @@ function computeColorsArray(start = '#fafa6e', end = '#41D067') {
   //console.log(chroma.scale(['#fafa6e','#2A4858'])(0.5).hsl());
 //colors = chroma.scale(['#fafa6e', '#fafa6e']).mode('lch').colors(6); // start and finish
   var colorCount = parseInt($('#colorcount').val());
-  colors = chroma.scale([start, end]).colors(colorCount);//colors = ['ff0000', '00ff00', '0000ff'];
+  colors = chroma.scale([start, end]).colors(colorCount+1);//colors = ['ff0000', '00ff00', '0000ff'];
   if (colorCount == 1) {
     colors = [start];
   }
@@ -251,8 +251,8 @@ function clearAndRestart() {
   blockBuild = new Array();
   document.getElementById("instructions").innerText = '' 
   var parent = document.querySelector('#block_0');
-  parent.style.height = initSquareBlock;
-  parent.style.width = initSquareBlock;
+  parent.style.height = initSquareBlockHeight;
+  parent.style.width = initSquareBlockWidth;
   parent.style.top = top;
   parent.style.left = left;
   recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
@@ -265,8 +265,8 @@ function clearAndRestart() {
 
 function clear() {
   var parent = document.querySelector('#block_0');
-  parent.style.height = initSquareBlock;
-  parent.style.width = initSquareBlock;
+  parent.style.height = initSquareBlockHeight;
+  parent.style.width = initSquareBlockWidth;
   parent.style.top = top;
   parent.style.left = left;
   while (parent.nextSibling) {
@@ -546,17 +546,18 @@ function getDivisionFactor(target, event, direction="horizontal") {
 //
 //
 
-var initSquareBlock = "800px";//getViewportSize()+"px";
-$('#bottomcontainer').css('width', initSquareBlock);
-$('#bottomcontainer').css('height', initSquareBlock);
-$('#topcontainer').css('width', initSquareBlock);
-$('#topcontainer').css('height', initSquareBlock);
-$('#blocks').css('width', initSquareBlock);
-$('#blocks').css('height', initSquareBlock);
+var initSquareBlockWidth = "450px";//getViewportSize()+"px";
+var initSquareBlockHeight = "800px";
+$('#bottomcontainer').css('width', "800px");
+$('#bottomcontainer').css('height', "800px");
+$('#topcontainer').css('width', "800px");
+$('#topcontainer').css('height', "800px");
+$('#blocks').css('width', initSquareBlockWidth);
+$('#blocks').css('height', initSquareBlockHeight);
 var top = 0;//$('#blocks').offset().top;
 var left = 0;//$('#blocks').offset().left;
 
-$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlock+"; width: "+initSquareBlock+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
