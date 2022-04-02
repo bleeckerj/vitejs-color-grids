@@ -546,8 +546,8 @@ function getDivisionFactor(target, event, direction="horizontal") {
 //
 //
 
-var initSquareBlockWidth = "450px";//getViewportSize()+"px";
-var initSquareBlockHeight = "800px";
+var initSquareBlockWidth = "281px";//getViewportSize()+"px";
+var initSquareBlockHeight = "500px";
 $('#bottomcontainer').css('width', "800px");
 $('#bottomcontainer').css('height', "800px");
 $('#topcontainer').css('width', "800px");
