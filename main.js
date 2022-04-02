@@ -243,7 +243,6 @@ function getRandomColor() {
 
   //return randomPaletteHexColor();
 }
-
 function clearAndRestart() {
   // clear the instruction array
   // clear all the elements except block_0
@@ -251,8 +250,8 @@ function clearAndRestart() {
   blockBuild = new Array();
   document.getElementById("instructions").innerText = '' 
   var parent = document.querySelector('#block_0');
-  parent.style.height = initSquareBlockHeight;
-  parent.style.width = initSquareBlockWidth;
+  parent.style.height = "100%";
+  parent.style.width = "100%";
   parent.style.top = top;
   parent.style.left = left;
   recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
@@ -262,6 +261,26 @@ function clearAndRestart() {
   }
   initRandomCuratedColorPalette()
 }
+// function clearAndRestart() {
+//   // clear the instruction array
+//   // clear all the elements except block_0
+//   // remove everything under block_0
+//   console.log("CLEAR AND RESTART!");
+//   blockBuild = new Array();
+//   document.getElementById("instructions").innerText = '' 
+//   var parent = document.querySelector('#block_0');
+//   //parent.style.height = "100%";//initSquareBlockHeight;
+//   // parent.style.width = "100%"; //initSquareBlockWidth;
+//   // parent.style.top = '0%';
+//   parent.style.left = '10%';
+//   recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
+//   console.log(parent);
+//   while (parent.nextSibling) {
+//     console.log("Hueh");
+//     parent.nextSibling.remove();
+//   }
+//   initRandomCuratedColorPalette()
+// }
 
 function clear() {
   var parent = document.querySelector('#block_0');
@@ -546,18 +565,19 @@ function getDivisionFactor(target, event, direction="horizontal") {
 //
 //
 
-var initSquareBlockWidth = "450px";//getViewportSize()+"px";
-var initSquareBlockHeight = "800px";
-$('#bottomcontainer').css('width', "800px");
-$('#bottomcontainer').css('height', "800px");
-$('#topcontainer').css('width', "800px");
-$('#topcontainer').css('height', "800px");
+var initSquareBlockWidth = "281px";//getViewportSize()+"px";
+var initSquareBlockHeight = "500px";
+$('#bottomcontainer').css('width', "100%");
+$('#bottomcontainer').css('height', "100%");
+// $('#topcontainer').css('width', "400px");
+// $('#topcontainer').css('height', initSquareBlockHeight);
 $('#blocks').css('width', initSquareBlockWidth);
 $('#blocks').css('height', initSquareBlockHeight);
+$('#blocks').css('left', "1 rem");
 var top = 0;//$('#blocks').offset().top;
 var left = 0;//$('#blocks').offset().left;
-
-$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+// top: "+top+"px; left: "+left+";
+$('#blocks').append("<div id=block_0 style='position: relative;  top: 0%; left: 0%; height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
@@ -610,11 +630,11 @@ $('#instructionbutton').after("<button id='donebutton' class='button1 button;'>D
 $('#donebutton').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
-var node = document.getElementById('blocks');
+//var node = document.getElementById('blocks');
 //console.log(node);
 var img;
-
-
+console.log(document.getElementById('block_0'));
+//document.getElementById('block_0').style.left = '0%';
 // domtoimage.toBlob(document.getElementById('blocks')).then(function (blob) {
 //   console.log(blob);
 //   let result = ipfs.add(blob).then(function (result) {
@@ -800,42 +820,3 @@ $('#fruitflavor').on("click", function(e) {
   });
 
   $('#colorfrom_g').prop("checked", true).trigger("click");
-
-
-//   document.addEventListener("DOMContentLoaded", function() {
-//     console.log("HELLO????");
-//   var externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'scripts/jscolor.js');
-//   document.head.appendChild(externalScript);
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js');
-//   document.head.appendChild(externalScript);
-// console.log(document.head);
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/web3modal@1.9.0/dist/index.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/web3@1.2.11/dist/web3.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js');
-//   document.head.appendChild(externalScript);
-//   });
