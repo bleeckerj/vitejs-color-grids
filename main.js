@@ -253,8 +253,8 @@ function clearAndRestart() {
   var parent = document.querySelector('#block_0');
   parent.style.height = initSquareBlockHeight;
   parent.style.width = initSquareBlockWidth;
-  parent.style.top = top;
-  parent.style.left = left;
+  // parent.style.top = top;
+  // parent.style.left = left;
   recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
   console.log(parent);
   while (parent.nextSibling) {
@@ -267,8 +267,8 @@ function clear() {
   var parent = document.querySelector('#block_0');
   parent.style.height = initSquareBlockHeight;
   parent.style.width = initSquareBlockWidth;
-  parent.style.top = top;
-  parent.style.left = left;
+  // parent.style.top = top;
+  // parent.style.left = left;
   while (parent.nextSibling) {
     parent.nextSibling.remove();
   }
@@ -545,19 +545,28 @@ function getDivisionFactor(target, event, direction="horizontal") {
 //
 //
 //
+const width  = window.innerWidth || document.documentElement.clientWidth || 
+document.body.clientWidth;
+const height = window.innerHeight|| document.documentElement.clientHeight|| 
+document.body.clientHeight;
 
-var initSquareBlockWidth = "281px";//getViewportSize()+"px";
-var initSquareBlockHeight = "500px";
+console.log(width, height);
+console.log(globalThis.screen.availWidth)
+console.log(globalThis.screen.availHeight)
+
+var initSquareBlockWidth = globalThis.screen.availWidth+"px";//getViewportSize()+"px";
+var initSquareBlockHeight = (globalThis.screen.availWidth*16/9)+"px";
 $('#bottomcontainer').css('width', "800px");
 $('#bottomcontainer').css('height', "800px");
 $('#topcontainer').css('width', "800px");
 $('#topcontainer').css('height', "800px");
 $('#blocks').css('width', initSquareBlockWidth);
 $('#blocks').css('height', initSquareBlockHeight);
-var top = 0;//$('#blocks').offset().top;
-var left = 0;//$('#blocks').offset().left;
+// var top = 0;//$('#blocks').offset().top;
+// var left = 0;//0; //$('#blocks').offset().left;
 
-$('#blocks').append("<div id=block_0 style='position: absolute; top: "+top+"px; left: "+left+"; box-sizing: content-box;  height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+// $('#blocks').append("<div id=block_0 style='position: relative; top: "+top+"px; left: "+left+"; height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
@@ -610,8 +619,12 @@ $('#instructionbutton').after("<button id='donebutton' class='button1 button;'>D
 $('#donebutton').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
-var node = document.getElementById('blocks');
+//var node = document.getElementById('blocks');
 //console.log(node);
+var blocksCurrentRect = document.getElementById('blocks').getBoundingClientRect();
+
+document.getElementById('blocks').style.left = '0px';
+console.log(document.getElementById('blocks'));
 var img;
 
 
@@ -629,7 +642,8 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
       var imageCID;    
       
       img = dataUrl;
-          
+      document.getElementById('blocks').style.left = blocksCurrentRect.left+"px";
+
         // console.log(img);
         // const foo =  uploadBlob(img).then(function (result) {
         //   console.log(result);
@@ -687,7 +701,10 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         link.download = 'LeWittttttttt.jpeg';
         link.href = dataUrl;
         link.click();
+
     });
+    console.log("DONE!");
+
 }); // button on click
 
 $('#walletbutton').after("<button id='wallet' class='button1 button;'>WALLET</button>");
@@ -800,42 +817,3 @@ $('#fruitflavor').on("click", function(e) {
   });
 
   $('#colorfrom_g').prop("checked", true).trigger("click");
-
-
-//   document.addEventListener("DOMContentLoaded", function() {
-//     console.log("HELLO????");
-//   var externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'scripts/jscolor.js');
-//   document.head.appendChild(externalScript);
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js');
-//   document.head.appendChild(externalScript);
-// console.log(document.head);
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/@walletconnect/web3-provider@1.2.1/dist/umd/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/web3modal@1.9.0/dist/index.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://unpkg.com/web3@1.2.11/dist/web3.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js');
-//   document.head.appendChild(externalScript);
-
-//   externalScript = document.createElement('script');
-//   externalScript.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.js');
-//   document.head.appendChild(externalScript);
-//   });
