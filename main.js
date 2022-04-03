@@ -558,7 +558,7 @@ console.log(width, height);
 console.log(globalThis.screen.availWidth)
 console.log(globalThis.screen.availHeight)
 
-var initSquareBlockWidth = "600px" //width+"px";//getViewportSize()+"px";
+var initSquareBlockWidth = "400px" //width+"px";//getViewportSize()+"px";
 var initSquareBlockHeight = "600px"//(width*16/9)+"px";
 $('#bottomcontainer').css('width', "800px");
 $('#bottomcontainer').css('height', "800px");
@@ -571,7 +571,7 @@ $('#topcontainer').css('height', "800px");
 // var left = 0;//0; //$('#blocks').offset().left;
 
 // $('#blocks').append("<div id=block_0 style='position: relative; top: "+top+"px; left: "+left+"; height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
-$('#blocks').append("<div id=block_0 style='position: absolute; width: 600px; height: 600px; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; width: "+initSquareBlockWidth+"; height: "+initSquareBlockHeight+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
