@@ -231,10 +231,10 @@ function getRandomColor() {
   // console.log(randomHsl());
   // return randomColor({ hue: 'light', format: 'hsla' });
   //return randomHsl();
-  // console.log($('#colorfrom_g').val());
+  console.log($('#colorfrom_g').val());
   // console.log($("input[name=colorfrom]:checked").val());
   var whichType = $("input[name=colorfrom]:checked").val();
-
+console.log(whichType);
   if (whichType == 'palette') {
     return randomPaletteHexColor();
   } else {
@@ -558,8 +558,8 @@ console.log(width, height);
 console.log(globalThis.screen.availWidth)
 console.log(globalThis.screen.availHeight)
 
-var initSquareBlockWidth = width+"px";//getViewportSize()+"px";
-var initSquareBlockHeight = (width*16/9)+"px";
+var initSquareBlockWidth = "600px" //width+"px";//getViewportSize()+"px";
+var initSquareBlockHeight = "600px"//(width*16/9)+"px";
 $('#bottomcontainer').css('width', "800px");
 $('#bottomcontainer').css('height', "800px");
 $('#topcontainer').css('width', "800px");
@@ -571,7 +571,7 @@ $('#topcontainer').css('height', "800px");
 // var left = 0;//0; //$('#blocks').offset().left;
 
 // $('#blocks').append("<div id=block_0 style='position: relative; top: "+top+"px; left: "+left+"; height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
-$('#blocks').append("<div id=block_0 style='position: relative; width: 675px; height: 1200px; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; width: 600px; height: 600px; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
@@ -775,6 +775,7 @@ $('#fruitflavor').on("click", function(e) {
 // If the pickers change or the count change, update the color range
 //
   var picker_1 = new JSColor('#cp1');
+  //picker_1.presets.default = {sliderSize:20, shadow:false};
   document.getElementById('cp1').jscolor.onChange = function() {
     computeColorsArray(this.toHEXString(),document.getElementById('cp2').jscolor.toHEXString() );
     document.getElementById('block_0').style.backgroundColor = this.toHEXString();
@@ -782,10 +783,10 @@ $('#fruitflavor').on("click", function(e) {
   picker_1.fromString(colors[0]);
 
   var picker_2 = new JSColor('#cp2');
+  //picker_2.presets.default = {sliderSize:20, shadow:false};
   //document.getElementById('cp2').jscolor.show();
   document.getElementById('cp2').jscolor.onChange = function() {
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(),this.toHEXString() );
-
   }
   picker_2.fromString(colors[colors.length-1]);
 
@@ -794,25 +795,23 @@ $('#fruitflavor').on("click", function(e) {
   });
 
   $('#colorfrom_g').on('click', function() {
-    document.getElementById('cp2').disabled = false;
-    document.getElementById('cp1').disabled = false;
-    document.getElementById('colorcount').disabled = false;
-    document.getElementById('qc').disabled = false;
-
+    // document.getElementById('cp2').disabled = false;
+    // document.getElementById('cp1').disabled = false;
+    // document.getElementById('colorcount').disabled = false;
+    // document.getElementById('qc').disabled = false;
+    // document.getElementById('fruitflavor').disabled = true;
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(), document.getElementById('cp2').jscolor.toHEXString());
     document.getElementById('block_0').style.backgroundColor = document.getElementById('cp1').jscolor.toHEXString();
     clearAndRestart();
-    document.getElementById('fruitflavor').disabled = true;
-    //document.getElementById('clear').disabled = true;
-
-
+    // //document.getElementById('clear').disabled = true;
   });
 
   $('#colorfrom_p').on('click', function() {
-    document.getElementById('cp2').disabled = true;// hidden = true;
-    document.getElementById('cp1').disabled = true;
-    document.getElementById('colorcount').disabled = true;
-    document.getElementById('qc').disabled = true;
+    console.log("HELLO");
+    // document.getElementById('cp2').disabled = true;// hidden = true;
+    // document.getElementById('cp1').disabled = true;
+    // document.getElementById('colorcount').disabled = true;
+    // document.getElementById('qc').disabled = true;
 
     document.getElementById('block_0').style.backgroundColor = getRandomColor();
     document.getElementById('fruitflavor').disabled = false;
@@ -821,4 +820,5 @@ $('#fruitflavor').on("click", function(e) {
     resetFruitFlavorsPalette();
   });
 
-  $('#colorfrom_g').prop("checked", true).trigger("click");
+
+  //$('#colorfrom_g').prop("checked", true).trigger("click");
