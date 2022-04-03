@@ -10,81 +10,82 @@
     
     <style>
         body {
-            width: 90%;
-            max-width: 900px;
-            margin: 2em auto;
+            /*width: 50%;*/
+            max-width: 800px;
+            margin: 1em auto;
             /* font: 1.2em/2 Arial, Helvetica, sans-serif; */
             font-family: 'Source Sans Pro', sans-serif;
             font-weight: 900;
+            width: 100vw;
+            height: 100vh;
         }
         .container {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 0.1fr;
             grid-template-rows: 20px 600px;
             grid-auto-rows: 60px; 
-            gap: 10px;
-            
+            gap: 10px;            
         }
         .container > div {
             /*max-width: 320px;*/
             border-radius: 5px;
-            padding: 20px;
+            padding: 0px;
             background-color: rgb(207,232,220);
             border: 2px solid rgb(200,15,227);
         }
         
         lewitt {
-            grid-column: 1/5;
+            grid-column: 1/4;
             grid-row: 2;
         }
         button_cp {
             grid-column: 1;
-            grid-row: 3;
+            grid-row: 15;
         }
         button_gp {
-            grid-column: 3;
-            grid-row: 3;
+            grid-column: 4;
+            grid-row: 15;
         }
         sizer {
             grid-column: 2;
-            grid-row: 4;
+            grid-row: 16;
         }
         wallet {
-            grid-column: 2;
-            grid-row: 3;
+            grid-column: 2/3;
+            grid-row: 15;
         }
         grad_start {
             grid-column: 1/2;
-            grid-row: 4;
+            grid-row: 16;
         }
         grad_end {
-            grid-column: 3;
-            grid-row: 4;
+            grid-column: 4;
+            grid-row: 16;
         }
         palette {
             grid-column: 1/2;
-            grid-row: 5;
+            grid-row: 17;
             
         }
         fresh_palette {
-            grid-column: 3;
-            grid-row: 5;
+            grid-column: 4;
+            grid-row: 17;
         }
         refresh {
             grid-column: 1;
-            grid-row: 6;
+            grid-row: 18;
         }
         done {
-            grid-column: 2;
-            grid-row: 6;
+            grid-column: 4;
+            grid-row: 18;
         }
         top {
-            grid-column: 1/4;
+            grid-column: 1/7;
             grid-row: 1;
         }
         instructions {
             grid-column: 1/4;
-            grid-row: 8;
+            grid-row: 20;
         }
         #blocks {
             background-color: lightgray;
