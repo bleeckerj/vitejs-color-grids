@@ -768,14 +768,17 @@ $('#fruitflavor').on("click", function(e) {
     
     // console.log(palette);
     palette.forEach((element) => {
-      $('#flavors').append('<div style="float : left; width: 30px; height: 20px; background-color : '+ element+';"></div>');
+      $('#flavors').append('<div style="float : left; width: 60px; height: 60px; background-color : '+ element+';"></div>');
     })
   }
 //
 // If the pickers change or the count change, update the color range
 //
   var picker_1 = new JSColor('#cp1');
-  //picker_1.presets.default = {sliderSize:20, shadow:false};
+  // picker_1.presets.default = {
+  //   previewSize:128, previewPadding:0, position:'right', width:200, 
+  //   height:200, shadow:false
+  // };
   document.getElementById('cp1').jscolor.onChange = function() {
     computeColorsArray(this.toHEXString(),document.getElementById('cp2').jscolor.toHEXString() );
     document.getElementById('block_0').style.backgroundColor = this.toHEXString();
@@ -783,8 +786,10 @@ $('#fruitflavor').on("click", function(e) {
   picker_1.fromString(colors[0]);
 
   var picker_2 = new JSColor('#cp2');
-  //picker_2.presets.default = {sliderSize:20, shadow:false};
-  //document.getElementById('cp2').jscolor.show();
+  // picker_2.presets.default = {
+  //   previewSize:128, previewPadding:0, position:'right', width:200, 
+  //   height:200, shadow:false
+  // };
   document.getElementById('cp2').jscolor.onChange = function() {
     computeColorsArray(document.getElementById('cp1').jscolor.toHEXString(),this.toHEXString() );
   }

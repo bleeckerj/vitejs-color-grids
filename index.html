@@ -24,7 +24,7 @@
             grid-template-columns: 1fr 1fr 1fr 0.1fr;
             grid-template-rows: 20px 600px;
             grid-auto-rows: 60px; 
-            gap: 10px;            
+            gap: 20px;            
         }
         .container > div {
             /*max-width: 320px;*/
@@ -33,51 +33,49 @@
             background-color: rgb(207,232,220);
             border: 2px solid rgb(200,15,227);
         }
-        
         lewitt {
             grid-column: 1/4;
             grid-row: 2;
+        }        
+        wallet {
+            grid-column: 1/5;
+            grid-row: 13/16;
+        }
+        palette {
+            grid-column: 1/5;
+            grid-row: 16/17;   
         }
         button_cp {
-            grid-column: 1;
-            grid-row: 15;
+            grid-column: 1/5;
+            grid-row: 17/19;
         }
-        button_gp {
-            grid-column: 4;
-            grid-row: 15;
+        grad_start {
+            grid-column: 1/5;
+            grid-row: 19;
         }
         sizer {
             grid-column: 2;
-            grid-row: 16;
-        }
-        wallet {
-            grid-column: 2/3;
-            grid-row: 15;
-        }
-        grad_start {
-            grid-column: 1/2;
-            grid-row: 16;
+            grid-row: 20;
         }
         grad_end {
-            grid-column: 4;
-            grid-row: 16;
+            grid-column: 1/5;
+            grid-row: 21;
         }
-        palette {
-            grid-column: 1/2;
-            grid-row: 17;
-            
+        button_gp {
+            grid-column: 1/5;
+            grid-row: 22/24;
         }
-        fresh_palette {
-            grid-column: 4;
-            grid-row: 17;
-        }
+        /* fresh_palette {
+            grid-column: 1/5;
+            grid-row: 30/33;
+        } */
         refresh {
-            grid-column: 1;
-            grid-row: 18;
+            grid-column: 1/5;
+            grid-row: 24/25;
         }
         done {
-            grid-column: 4;
-            grid-row: 18;
+            grid-column: 1/5;
+            grid-row: 25/27;
         }
         top {
             grid-column: 1/7;
@@ -85,18 +83,16 @@
         }
         instructions {
             grid-column: 1/4;
-            grid-row: 20;
+            grid-row: 28;
         }
         #blocks {
             background-color: lightgray;
             border: 2px solid green;
             border-radius: 10px;
-            
         }
         #palette {
-            background-color: lightblue;
-            border: 2px solid green;
-            border-radius: 10px;
+            background-color: white;
+            border: 2px solid lightgray;
             text-align: center;
         }
         #title {
@@ -106,16 +102,28 @@
             font-weight: 900;
         }
         .radio-toolbar {
-            margin: 10px;
+            margin: 0px;
         }
         .radio-toolbar label {
-            display: inline-block;
+            /* display: inline-block;
             background-color: #ddd;
             padding: 10px 20px;
             font-family: 'Source Sans Pro', sans-serif;
-            font-size: 16px;
-            border: 2px solid #444;
-            border-radius: 4px;
+            font-size: 24px;
+            border: none;  */
+            border-radius: 0px;
+            width: 93%;
+            height: 60%;
+            display: block;
+            border: none;
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 28px;
+            font-weight: 900;
+            font-size: 32px;
+            cursor: pointer;
+            text-align: center;
+            line-height: 3em;
         }
         .radio-toolbar input[type="radio"] {
             opacity: 0;
@@ -125,12 +133,27 @@
         .radio-toolbar input[type="radio"]:checked + label {
             background-color:#bfb;
             border-color: #4c4;
+            color: black;
+            line-height: 3em;
         }
         .radio-toolbar input[type="radio"]:focus + label {
-            border: 2px dashed #444;
+            border: 2px #444;
         }
         .radio-toolbar label:hover {
-            background-color: #dfd;
+            background-color: pink;
+        }
+        .block-button {
+            display: block;
+            width: 100%;
+            height: 105%;
+            border: none;
+            background-color: #04AA6D;
+            color: white;
+            padding: 14px 28px;
+            font-weight: 900;
+            font-size: 32px;
+            cursor: pointer;
+            text-align: center;
         }
     </style>
 </head>
@@ -167,14 +190,11 @@
                 </select>
             </div>
         </sizer>
-        <grad_start>
-            GRADIENT START
-            <button id="cp1"></button>
+        <grad_start> 
+            <button class="block-button" id="cp1">GRADIENT START</button>
         </grad_start>
         <grad_end>
-            GRADIENT END
-            <button id="cp2" ></button>
-            
+            <button class="block-button" id="cp2" >GRADIENT END</button>
         </grad_end>
         <palette id="palette">
             <!-- <input class="form-check-input" type="radio" name="colorfrom" id="colorfrom_p" value="palette" checked>
@@ -184,26 +204,26 @@
                 <div  id="flavors"></div>
                 <!-- PALETTE -->
             </palette>
-            <fresh_palette id="fresh_palette">
-                FRESHEN
+            <!-- <fresh_palette id="fresh_palette">
+                <button class="block-button">FRESHEN</button>
                 <div id="fruitflavor"></div>
-            </fresh_palette>
+            </fresh_palette> -->
             <button_cp class="radio-toolbar">
                 <input type="radio" value="palette" name="colorfrom" id="colorfrom_p">
-                <label for="colorfrom_p">PALETTE</label>
+                <label for="colorfrom_p">USE RND() PALETTE</label>
             </button_cp>
             <button_gp class="radio-toolbar">
                 <input type="radio" value="gradient" name="colorfrom" id="colorfrom_g" checked>
-                <label for="colorfrom_g">GRAD</label>
+                <label for="colorfrom_g">PICK GRADIENT</label>
             </button_gp>
             <wallet>
-                CONNECT WALLET
+                <button class="block-button">CONNECT WALLET</button>
             </wallet>
             <refresh>
-                REFRESH
+                <button class="block-button">REFRESH</button>
             </refresh>
             <done>
-                DONE
+                <button class="block-button">DONE</button>
             </done>
             <instructions id="instructions">
                 INSTRUCTIONS
