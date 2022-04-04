@@ -24,14 +24,14 @@
             grid-template-columns: 1fr 1fr 1fr 0.1fr;
             grid-template-rows: 20px 600px;
             grid-auto-rows: 60px; 
-            gap: 20px;            
+            gap: 10px;            
         }
         .container > div {
             /*max-width: 320px;*/
             border-radius: 5px;
             padding: 0px;
-            background-color: rgb(207,232,220);
-            border: 2px solid rgb(200,15,227);
+            /* background-color: rgb(207,232,220); */
+            /* border: 2px solid rgb(200,15,227); */
         }
         lewitt {
             grid-column: 1/4;
@@ -51,31 +51,31 @@
         }
         grad_start {
             grid-column: 1/5;
-            grid-row: 19;
+            grid-row: 21;
         }
         sizer {
             grid-column: 2;
-            grid-row: 20;
+            grid-row: 22;
         }
         grad_end {
             grid-column: 1/5;
-            grid-row: 21;
+            grid-row: 23;
         }
         button_gp {
             grid-column: 1/5;
-            grid-row: 22/24;
+            grid-row: 19/21;
         }
-        /* fresh_palette {
+        fresh_palette {
             grid-column: 1/5;
             grid-row: 30/33;
-        } */
+        }
         refresh {
             grid-column: 1/5;
-            grid-row: 24/25;
+            grid-row: 25/26;
         }
         done {
             grid-column: 1/5;
-            grid-row: 25/27;
+            grid-row: 26/27;
         }
         top {
             grid-column: 1/7;
@@ -86,13 +86,13 @@
             grid-row: 28;
         }
         #blocks {
-            background-color: lightgray;
-            border: 2px solid green;
-            border-radius: 10px;
+            /* background-color: lightgray;
+            border: 2px solid green; */
+            /* border-radius: 10px; */
         }
         #palette {
-            background-color: white;
-            border: 2px solid lightgray;
+            /* background-color: white;
+            border: 2px solid lightgray; */
             text-align: center;
         }
         #title {
@@ -103,6 +103,7 @@
         }
         .radio-toolbar {
             margin: 0px;
+
         }
         .radio-toolbar label {
             /* display: inline-block;
@@ -112,7 +113,7 @@
             font-size: 24px;
             border: none;  */
             border-radius: 0px;
-            width: 93%;
+            width: 73%;
             height: 60%;
             display: block;
             border: none;
@@ -144,7 +145,7 @@
         }
         .block-button {
             display: block;
-            width: 100%;
+            width: 80%;
             height: 105%;
             border: none;
             background-color: #04AA6D;
@@ -163,9 +164,6 @@
     <div class="container">
         <top id="title">$LEWITTTTTTTTT</top>
         <lewitt id="blocks">
-            <!-- <p>HELLO! HELLO! HELLO! HELLO! HELLO! HELLO! HELLO! HELLO! HELLO! HELLO!
-            </p>
-            <img src="./HQ_012_C_1687x3000_0401_1743 _600px.png"> -->
         </lewitt>
         <sizer>
             GRADIENT SIZER
@@ -197,15 +195,9 @@
             <button class="block-button" id="cp2" >GRADIENT END</button>
         </grad_end>
         <palette id="palette">
-            <!-- <input class="form-check-input" type="radio" name="colorfrom" id="colorfrom_p" value="palette" checked>
-                <label class="form-check-label" for="exampleRadios1">
-                    Curated Color Palette
-                </label> -->
                 <div  id="flavors"></div>
-                <!-- PALETTE -->
             </palette>
             <!-- <fresh_palette id="fresh_palette">
-                <button class="block-button">FRESHEN</button>
                 <div id="fruitflavor"></div>
             </fresh_palette> -->
             <button_cp class="radio-toolbar">
@@ -214,7 +206,7 @@
             </button_cp>
             <button_gp class="radio-toolbar">
                 <input type="radio" value="gradient" name="colorfrom" id="colorfrom_g" checked>
-                <label for="colorfrom_g">PICK GRADIENT</label>
+                <label for="colorfrom_g">USE GRADIENT</label>
             </button_gp>
             <wallet>
                 <button class="block-button">CONNECT WALLET</button>
@@ -223,7 +215,7 @@
                 <button class="block-button">REFRESH</button>
             </refresh>
             <done>
-                <button class="block-button">DONE</button>
+                <button id="donebutton" class="block-button">DONE</button>
             </done>
             <instructions id="instructions">
                 INSTRUCTIONS

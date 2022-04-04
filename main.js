@@ -560,17 +560,18 @@ console.log(globalThis.screen.availHeight)
 
 var initSquareBlockWidth = "80vw"; //globalThis.screen.width+"px"; //width+"px";//getViewportSize()+"px";
 var initSquareBlockHeight = (80*16/9)+"vw";
-$('#bottomcontainer').css('width', "800px");
-$('#bottomcontainer').css('height', "800px");
-$('#topcontainer').css('width', "800px");
-$('#topcontainer').css('height', "800px");
-// $('#blocks').css('width', initSquareBlockWidth);
-// $('#blocks').css('height', initSquareBlockHeight);
-
+// $('#bottomcontainer').css('width', "800px");
+// $('#bottomcontainer').css('height', "800px");
+// $('#topcontainer').css('width', "800px");
+// $('#topcontainer').css('height', "800px");
+$('#blocks').css('width', initSquareBlockWidth);
+$('#blocks').css('height', initSquareBlockHeight);
+$('#blocks').css('position', 'absolute');
+$('#blocks').css('left', '20px');
+$('#blocks').css('top', '80px');
 // var top = 0;//$('#blocks').offset().top;
 // var left = 0;//0; //$('#blocks').offset().left;
 
-// $('#blocks').append("<div id=block_0 style='position: relative; top: "+top+"px; left: "+left+"; height: "+initSquareBlockHeight+"; width: "+initSquareBlockWidth+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 $('#blocks').append("<div id=block_0 style='position: absolute; width:80vw; height: "+initSquareBlockHeight+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
@@ -620,15 +621,16 @@ recordBlockBuild(null, document.querySelector("#block_0"), "PLACE");
 $('#instructions').append('<div style="font-size: 10px" class="p-2">TAP/CLICK FOLDS VERT <br/>LONG PRESS FOLDS HORIZ. <br/>THERE IS NO UNDO. <br/>WHEN YOU CLICK \'DONE\' YOU\'LL GET YOUR ART AND A PDF OF INSTRUCTIONS.</div>')
 
 // document.querySelector('#instructions').innerHTML = `<div>DO THIS TO DO THAT. DO THAT TO DO THIS.</div><div>`
-$('#instructionbutton').after("<button id='donebutton' class='button1 button;'>DONE</button>");
+//$('#instructionbutton').after("<button id='donebutton' class='button1 button;'>DONE</button>");
 $('#donebutton').on("click", function(e) {
  var instrText = unfurlBlockBuild();
 
 //var node = document.getElementById('blocks');
 //console.log(node);
 var blocksCurrentRect = document.getElementById('blocks').getBoundingClientRect();
-
+console.log('blocks at '+blocksCurrentRect);
 document.getElementById('blocks').style.left = '0px';
+document.getElementById('blocks').style.top = '0px';
 console.log(document.getElementById('blocks'));
 var img;
 
@@ -645,7 +647,8 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
     .then(function (dataUrl) {
       var metaDataCID;
       var imageCID;    
-      
+      document.getElementById('blocks').style.left = '20px';
+document.getElementById('blocks').style.top = '80px';
       img = dataUrl;
       document.getElementById('blocks').style.left = blocksCurrentRect.left+"px";
 
@@ -691,16 +694,16 @@ domtoimage.toJpeg(document.getElementById('blocks'), { quality: 0.95 })
         });
         */
 //        console.log(result);
-        const doc = new jsPDF({
-          orientation: "portrait",
-          unit: "in",
-          format: "letter"
-        });
+        // const doc = new jsPDF({
+        //   orientation: "portrait",
+        //   unit: "in",
+        //   format: "letter"
+        // });
 
-        doc.setFontSize(8);
-        doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
-        doc.text(instrText,0.1, 4.2);
-        doc.save("instructions.pdf");
+        // doc.setFontSize(8);
+        // doc.addImage(img, 'JPEG', 0.1, 0.1, 4, 4);
+        // doc.text(instrText,0.1, 4.2);
+        // doc.save("instructions.pdf");
 
         var link = document.createElement('a');
         link.download = 'LeWittttttttt.jpeg';
@@ -768,7 +771,7 @@ $('#fruitflavor').on("click", function(e) {
     
     // console.log(palette);
     palette.forEach((element) => {
-      $('#flavors').append('<div style="float : left; width: 60px; height: 60px; background-color : '+ element+';"></div>');
+      $('#flavors').append('<div style="float : left; margin-top: 5px; margin-right: 5px; width: 60px; height: 60px; background-color : '+ element+';"></div>');
     })
   }
 //
@@ -819,7 +822,7 @@ $('#fruitflavor').on("click", function(e) {
     // document.getElementById('qc').disabled = true;
 
     document.getElementById('block_0').style.backgroundColor = getRandomColor();
-    document.getElementById('fruitflavor').disabled = false;
+    //document.getElementById('fruitflavor').disabled = false;
     //document.getElementById('clear').disabled = false;
 
     resetFruitFlavorsPalette();
