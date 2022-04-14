@@ -557,8 +557,9 @@ document.body.clientHeight;
 console.log(width, height);
 console.log(globalThis.screen)
 console.log(globalThis.screen.availHeight)
-
-var initSquareBlockWidth = "800px";//"80vw"; //globalThis.screen.width+"px"; //width+"px";//getViewportSize()+"px";
+// width:20%;
+// max-width:100px;
+var initSquareBlockWidth = "90%";//"80vw"; //globalThis.screen.width+"px"; //width+"px";//getViewportSize()+"px";
 var initSquareBlockHeight = "800px"; //(80*16/9)+"vw";
 // $('#bottomcontainer').css('width', "800px");
 // $('#bottomcontainer').css('height', "800px");
@@ -572,7 +573,7 @@ $('#blocks').css('top', '80px');
 // var top = 0;//$('#blocks').offset().top;
 // var left = 0;//0; //$('#blocks').offset().left;
 
-$('#blocks').append("<div id=block_0 style='position: absolute; width: "+initSquareBlockWidth+"; height: "+initSquareBlockHeight+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
+$('#blocks').append("<div id=block_0 style='position: absolute; max-width: 500px; width: "+initSquareBlockWidth+"; height: "+initSquareBlockHeight+"; outline:  "+borderWidth/2+"px solid "+borderColor+"; outline-offset: -"+outlineOffset/2+"px; background-color:"+getRandomColor()+"'></div>");//.on("click", divideMe);
 
 var myElement = document.getElementById('block_0');
 
